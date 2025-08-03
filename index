@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎰 Slot Machine Analyzer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 4rem auto;
+      background: #ffffff;
+      padding: 2.5rem 2rem;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1.2rem;
+      color: #555;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.4rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #4facfe;
+      outline: none;
+    }
+
+    button {
+      margin-top: 2rem;
+      padding: 0.75rem;
+      background: linear-gradient(to right, #43e97b, #38f9d7);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #11998e, #38ef7d);
+    }
+
+    .output {
+      margin-top: 2.5rem;
+      background-color: #e8f5e9;
+      padding: 1.5rem;
+      border-radius: 10px;
+      color: #2e7d32;
+      font-size: 1rem;
+      line-height: 1.6;
+      border-left: 5px solid #43a047;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem;
+        margin: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎰 Slot Machine Analyzer</h1>
+    <form id="slotForm">
+      <label>Number of Rows:
+        <input type="number" name="rows" min="1" required />
+      </label>
+      <label>Number of Columns:
+        <input type="number" name="columns" min="1" required />
+      </label>
+      <label>Total Number of Symbols:
+        <input type="number" name="symbols" min="1" required />
+      </label>
+      <label>Include Scatter Symbols?
+        <select name="scatter">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </label>
+      <label>Include Wild Symbols?
+        <select name="wild">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </label>
+      <label>Minimum Symbols to Win:
+        <input type="number" name="minwin" min="1" required />
+      </label>
+      <label>Scatter Needed for Free Spins:
+        <input type="number" name="scatter_needed" min="0" required />
+      </label>
+      <label>Free Spins Awarded:
+        <input type="number" name="free_spins" min="0" required />
+      </label>
+      <label>Player Return (RTP %):
+        <input type="number" name="rtp" step="0.1" min="0" max="100" required />
+      </label>
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div id="result" class="output" style="display:none"></div>
+  </div>
+
+  <script>
+    document.getElementById('slotForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const result = {};
+      for (let [key, value] of formData.entries()) {
+        result[key] = value;
+      }
+      const output = `
+        <strong>Configuration Summary:</strong><br>
+        Rows: ${result.rows}<br>
+        Columns: ${result.columns}<br>
+        Symbols: ${result.symbols}<br>
+        Scatter: ${result.scatter}<br>
+        Wild: ${result.wild}<br>
+        Minimum to Win: ${result.minwin}<br>
+        Scatter Needed: ${result.scatter_needed}<br>
+        Free Spins: ${result.free_spins}<br>
+        RTP: ${result.rtp}%
+      `;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = output;
+      resultDiv.style.display = 'block';
+      resultDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
