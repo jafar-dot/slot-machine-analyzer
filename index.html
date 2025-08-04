@@ -2,29 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Slot Machine Analyzer</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f5f7fa;
       color: #333;
     }
-
     .container {
       max-width: 100%;
-      width: 100%;
       padding: 1rem;
-      margin: 0 auto;
       display: flex;
       justify-content: center;
     }
-
     .form-wrapper {
       background-color: #fff;
       padding: 2rem;
@@ -33,22 +26,18 @@
       width: 100%;
       max-width: 600px;
     }
-
     h1 {
       text-align: center;
       margin-bottom: 1.5rem;
       font-size: 1.75rem;
       color: #007b5e;
     }
-
     label {
       display: block;
       margin-top: 1rem;
       font-weight: bold;
     }
-
-    input,
-    select {
+    input, select {
       width: 100%;
       padding: 0.6rem;
       margin-top: 0.25rem;
@@ -56,7 +45,6 @@
       border: 1px solid #ccc;
       font-size: 1rem;
     }
-
     button {
       margin-top: 2rem;
       padding: 0.75rem;
@@ -69,27 +57,15 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     button:hover {
       background-color: #005f49;
     }
-
     .output {
       margin-top: 2rem;
       background-color: #e0f7fa;
       padding: 1rem;
       border-radius: 6px;
       word-wrap: break-word;
-    }
-
-    @media (max-width: 600px) {
-      .form-wrapper {
-        padding: 1rem;
-      }
-
-      h1 {
-        font-size: 1.5rem;
-      }
     }
   </style>
 </head>
@@ -108,37 +84,53 @@
           <input type="number" name="symbols" min="1" required />
         </label>
         <label>Include Scatter Symbols?
-          <select name="scatter">
+          <select name="scatter" id="scatterSelect">
             <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option value="false" selected>No</option>
           </select>
         </label>
         <label>Include Wild Symbols?
-          <select name="wild">
+          <select name="wild" id="wildSelect">
             <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option value="false" selected>No</option>
           </select>
         </label>
-        <label>Minimum Symbols to Win:
+        <label>Minimum matching symbols required to win:
           <input type="number" name="minwin" min="1" required />
         </label>
-        <label>Scatter Needed for Free Spins:
-          <input type="number" name="scatter_needed" min="0" required />
+        <label>Multiplier:
+          <input type="number" name="multiplier" step="0.1" min="0" />
         </label>
-        <label>Free Spins Awarded:
-          <input type="number" name="free_spins" min="0" required />
+        <label id="jackpotLabel" style="display:none;">Jackpot Amount:
+          <input type="number" name="jackpot" min="0" />
+        </label>
+        <label id="scatterNeededLabel" style="display:none;">Scatter Needed for Free Spins:
+          <input type="number" name="scatter_needed" min="0" />
+        </label>
+        <label id="freeSpinsLabel" style="display:none;">Free Spins Awarded:
+          <input type="number" name="free_spins" min="0" />
         </label>
         <label>Player Return (RTP %):
           <input type="number" name="rtp" step="0.1" min="0" max="100" required />
         </label>
         <button type="submit">Analyze</button>
       </form>
-
       <div id="result" class="output" style="display:none"></div>
     </div>
   </div>
 
   <script>
+    // إظهار أو إخفاء عناصر حسب wild و scatter
+    document.getElementById('wildSelect').addEventListener('change', function () {
+      document.getElementById('jackpotLabel').style.display = (this.value === 'true') ? 'block' : 'none';
+    });
+
+    document.getElementById('scatterSelect').addEventListener('change', function () {
+      const show = (this.value === 'true');
+      document.getElementById('scatterNeededLabel').style.display = show ? 'block' : 'none';
+      document.getElementById('freeSpinsLabel').style.display = show ? 'block' : 'none';
+    });
+
     document.getElementById('slotForm').addEventListener('submit', function (e) {
       e.preventDefault();
       const formData = new FormData(this);
@@ -146,6 +138,7 @@
       for (let [key, value] of formData.entries()) {
         result[key] = value;
       }
+
       const output = `
         <strong>Configuration Summary:</strong><br>
         Rows: ${result.rows}<br>
@@ -154,13 +147,27 @@
         Scatter: ${result.scatter}<br>
         Wild: ${result.wild}<br>
         Minimum to Win: ${result.minwin}<br>
-        Scatter Needed: ${result.scatter_needed}<br>
-        Free Spins: ${result.free_spins}<br>
+        Multiplier: ${result.multiplier}<br>
+        Jackpot: ${result.jackpot || 'N/A'}<br>
+        Scatter Needed: ${result.scatter_needed || 'N/A'}<br>
+        Free Spins: ${result.free_spins || 'N/A'}<br>
         RTP: ${result.rtp}%
       `;
       const resultDiv = document.getElementById('result');
       resultDiv.innerHTML = output;
       resultDiv.style.display = 'block';
+
+      // 🔁 إرسال البيانات إلى السيرفر عبر LocalTunnel (غيّر الرابط حسب رابطك)
+      fetch("https://YOUR_LOCALTUNNEL_URL/receive", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(result)
+      })
+        .then(res => res.text())
+        .then(data => console.log("Server responded:", data))
+        .catch(err => console.error("Error sending data:", err));
     });
   </script>
 </body>
