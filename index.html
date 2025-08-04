@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Slot Machine Analyzer</title>
+  <title>-Slot Machine Analyzer-</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -157,14 +157,18 @@
       resultDiv.innerHTML = output;
       resultDiv.style.display = 'block';
 
-   
-   fetch("https://b79ae71f99f5.ngrok-free.app/receive", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(result)
-});
+  // Corrected fetch with chaining
+    fetch("https://b79ae71f99f5.ngrok-free.app/receive", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(result)
+    })
+    .then(res => res.text())
+    .then(data => console.log("Server responded:", data))
+    .catch(err => console.error("Error sending data:", err));
+  });
 
         .then(res => res.text())
         .then(data => console.log("Server responded:", data))
