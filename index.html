@@ -119,45 +119,45 @@
     </div>
   </div>
 
-  <script>
-    // إظهار أو إخفاء عناصر حسب wild و scatter
-    document.getElementById('wildSelect').addEventListener('change', function () {
-      document.getElementById('jackpotLabel').style.display = (this.value === 'true') ? 'block' : 'none';
-    });
+<script>
+  // Show/hide fields based on wild and scatter selections
+  document.getElementById('wildSelect').addEventListener('change', function () {
+    document.getElementById('jackpotLabel').style.display = (this.value === 'true') ? 'block' : 'none';
+  });
 
-    document.getElementById('scatterSelect').addEventListener('change', function () {
-      const show = (this.value === 'true');
-      document.getElementById('scatterNeededLabel').style.display = show ? 'block' : 'none';
-      document.getElementById('freeSpinsLabel').style.display = show ? 'block' : 'none';
-    });
+  document.getElementById('scatterSelect').addEventListener('change', function () {
+    const show = (this.value === 'true');
+    document.getElementById('scatterNeededLabel').style.display = show ? 'block' : 'none';
+    document.getElementById('freeSpinsLabel').style.display = show ? 'block' : 'none';
+  });
 
-    document.getElementById('slotForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const result = {};
-      for (let [key, value] of formData.entries()) {
-        result[key] = value;
-      }
+  document.getElementById('slotForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const result = {};
+    for (let [key, value] of formData.entries()) {
+      result[key] = value;
+    }
 
-      const output = `
-        <strong>Configuration Summary:</strong><br>
-        Rows: ${result.rows}<br>
-        Columns: ${result.columns}<br>
-        Symbols: ${result.symbols}<br>
-        Scatter: ${result.scatter}<br>
-        Wild: ${result.wild}<br>
-        Minimum to Win: ${result.minwin}<br>
-        Multiplier: ${result.multiplier}<br>
-        Jackpot: ${result.jackpot || 'N/A'}<br>
-        Scatter Needed: ${result.scatter_needed || 'N/A'}<br>
-        Free Spins: ${result.free_spins || 'N/A'}<br>
-        RTP: ${result.rtp}%
-      `;
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = output;
-      resultDiv.style.display = 'block';
+    const output = `
+      <strong>Configuration Summary:</strong><br>
+      Rows: ${result.rows}<br>
+      Columns: ${result.columns}<br>
+      Symbols: ${result.symbols}<br>
+      Scatter: ${result.scatter}<br>
+      Wild: ${result.wild}<br>
+      Minimum to Win: ${result.minwin}<br>
+      Multiplier: ${result.multiplier}<br>
+      Jackpot: ${result.jackpot || 'N/A'}<br>
+      Scatter Needed: ${result.scatter_needed || 'N/A'}<br>
+      Free Spins: ${result.free_spins || 'N/A'}<br>
+      RTP: ${result.rtp}%
+    `;
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = output;
+    resultDiv.style.display = 'block';
 
-  // Corrected fetch with chaining
+    // Send data to server
     fetch("https://b79ae71f99f5.ngrok-free.app/receive", {
       method: "POST",
       headers: {
@@ -169,11 +169,8 @@
     .then(data => console.log("Server responded:", data))
     .catch(err => console.error("Error sending data:", err));
   });
+</script>
 
-        .then(res => res.text())
-        .then(data => console.log("Server responded:", data))
-        .catch(err => console.error("Error sending data:", err));
-    });
   </script>
 </body>
 </html>
