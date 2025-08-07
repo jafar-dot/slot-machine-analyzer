@@ -71,7 +71,7 @@
   <div class="container">
     <h1> Slot Machine Math Analyzer</h1>
     <form id="slotForm">
-      <label>Total Number of Symbols:
+      <label>Total Number of Symbols @@@:
         <input type="number" name="total_num_symbols" min="1" required />
       </label>
       <label>Number of Rows:
@@ -150,13 +150,16 @@
         else result[key] = value;
       }
       outputDiv.textContent = " Running analysis...\n";
-      fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(result)
-      })
+
+fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(result)
+})
+
+
+
+      
       .then(res => res.json())
       .then(data => {
         if (data.output) {
