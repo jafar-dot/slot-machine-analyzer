@@ -3,160 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Slot Machine Analyzer</title>
+  <title>Slot Machine Math Analyzer</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #141e30, #243b55);
-      color: #eee;
+      padding: 2rem;
+      background: #f3f4f6;
+      font-family: 'Segoe UI', sans-serif;
+      color: #111;
     }
     .container {
-      max-width: 100%;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .form-wrapper {
-      background-color: #1f2937;
+      max-width: 800px;
+      margin: auto;
+      background: white;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-      width: 100%;
-      max-width: 700px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     h1 {
       text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 2rem;
-      color: #00f7ff;
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      color: #007b5e;
     }
     label {
       display: block;
       margin-top: 1rem;
-      font-weight: bold;
-      color: #ccc;
+      font-weight: 600;
     }
     input, select {
       width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.25rem;
+      padding: 0.5rem;
+      margin-top: 0.4rem;
       border-radius: 6px;
-      border: 1px solid #555;
-      background-color: #111827;
-      color: white;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
     button {
       margin-top: 2rem;
-      padding: 0.75rem;
-      background-color: #00f7ff;
-      color: #111;
-      border: none;
       width: 100%;
-      border-radius: 8px;
-      font-size: 1.1rem;
+      padding: 0.75rem;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: 0.3s ease;
     }
     button:hover {
-      background-color: #00c5cc;
+      background-color: #005f49;
     }
-    .output {
+    .output-box {
       margin-top: 2rem;
-      background-color: #111827;
+      background: #1e1e1e;
+      color: #00ff88;
       padding: 1rem;
-      border-radius: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      color: #0f0;
+      border-radius: 6px;
+      min-height: 150px;
       font-family: monospace;
-      border: 1px solid #444;
-    }
-    .section-title {
-      font-size: 1.2rem;
-      color: #0ff;
-      margin-top: 2rem;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      max-height: 400px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="form-wrapper">
-      <h1>AI Slot Machine Analyzer</h1>
-      <form id="slotForm">
-        <label>Number of Rows:
-          <input type="number" name="rows" min="1" required />
+    <h1> Slot Machine Math Analyzer</h1>
+    <form id="slotForm">
+      <label>Total Number of Symbols:
+        <input type="number" name="total_num_symbols" min="1" required />
+      </label>
+      <label>Number of Rows:
+        <input type="number" name="rows" min="1" required />
+      </label>
+      <label>Number of Columns:
+        <input type="number" name="columns" min="1" required />
+      </label>
+      <label>Minimum Matching Symbols to Win:
+        <input type="number" name="min_win" min="1" required />
+      </label>
+      <label>Include Scatter Symbols?
+        <select name="scatter" id="scatterSelect" required>
+          <option value="false" selected>No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
+      <div id="scatterOptions" style="display:none;">
+        <label>Minimum Scatters to Trigger Win:
+          <input type="number" name="min_win_scatter" min="1" />
         </label>
-        <label>Number of Columns:
-          <input type="number" name="columns" min="1" required />
-        </label>
-        <label>Total Number of Symbols:
-          <input type="number" name="total_num_symbols" min="1" required />
-        </label>
-        <label>Include Scatter Symbols?
-          <select name="scatter" id="scatterSelect">
-            <option value="true">Yes</option>
-            <option value="false" selected>No</option>
-          </select>
-        </label>
-        <label>Include Wild Symbols?
-          <select name="wild" id="wildSelect">
-            <option value="true">Yes</option>
-            <option value="false" selected>No</option>
-          </select>
-        </label>
-        <label>Minimum Matching Symbols to Win:
-          <input type="number" name="min_win" min="1" required />
-        </label>
-        <label>Scatter Needed to Win:
-          <input type="number" name="min_win_scatter" min="1" required />
-        </label>
-        <label>Free Spins Retrigger Allowed?
+        <label>Free Spins Retigger Allowed?
           <select name="free_spins_retigger">
-            <option value="true">Yes</option>
             <option value="false" selected>No</option>
+            <option value="true">Yes</option>
           </select>
         </label>
         <label>Number of Free Spins:
-          <input type="number" name="num_free_spin" min="0" required />
+          <input type="number" name="num_free_spin" min="0" />
         </label>
         <label>Multiplier:
-          <input type="number" name="multiplier" step="0.1" min="0" required />
+          <input type="number" name="multiplier" step="0.1" min="0" />
         </label>
+      </div>
+      <label>Include Wild Symbols?
+        <select name="wild" id="wildSelect" required>
+          <option value="false" selected>No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
+      <div id="wildOptions" style="display:none;">
         <label>Jackpot:
-          <input type="number" name="jackpot" min="0" required />
+          <input type="number" name="jackpot" min="0" />
         </label>
-        <label>Player Return (RTP %):
-          <input type="number" name="rtp" step="0.1" min="0" max="100" required />
-        </label>
-        <label>RTP Range:
-          <input type="number" name="rtp_range" step="0.1" min="0" required />
-        </label>
-        <button type="submit">Analyze</button>
-      </form>
-      <div class="section-title">C++ Output:</div>
-      <div id="result" class="output">Waiting for analysis...</div>
-    </div>
+      </div>
+      <label>Player Return (RTP %):
+        <input type="number" name="rtp" step="0.1" min="0" max="100" required />
+      </label>
+      <label>RTP Range:
+        <input type="number" name="rtp_range" step="0.1" min="0" required />
+      </label>
+      <button type="submit"> Analyze</button>
+    </form>
+    <div class="output-box" id="output">Waiting for analysis...</div>
   </div>
   <script>
-    document.getElementById('slotForm').addEventListener('submit', function (e) {
+    const scatterSelect = document.getElementById('scatterSelect');
+    const wildSelect = document.getElementById('wildSelect');
+    const scatterOptions = document.getElementById('scatterOptions');
+    const wildOptions = document.getElementById('wildOptions');
+    const outputDiv = document.getElementById('output');
+    scatterSelect.addEventListener('change', () => {
+      scatterOptions.style.display = (scatterSelect.value === 'true') ? 'block' : 'none';
+    });
+    wildSelect.addEventListener('change', () => {
+      wildOptions.style.display = (wildSelect.value === 'true') ? 'block' : 'none';
+    });
+    document.getElementById('slotForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const formData = new FormData(this);
       const result = {};
       for (let [key, value] of formData.entries()) {
-        if (value === "true") result[key] = true;
-        else if (value === "false") result[key] = false;
+        if (value === 'true') result[key] = true;
+        else if (value === 'false') result[key] = false;
         else if (!isNaN(value)) result[key] = Number(value);
         else result[key] = value;
       }
-      const resultDiv = document.getElementById('result');
-      resultDiv.textContent = "Analyzing... Please wait.";
+      outputDiv.textContent = " Running analysis...\n";
       fetch("https://ef53d56100b9.ngrok-free.app/receive", {
         method: "POST",
         headers: {
@@ -167,14 +160,15 @@
       .then(res => res.json())
       .then(data => {
         if (data.output) {
-          resultDiv.textContent = data.output;
+          outputDiv.textContent += data.output;
+        } else if (data.message) {
+          outputDiv.textContent += " " + data.message;
         } else {
-          resultDiv.textContent = " Done. But no output received.";
+          outputDiv.textContent += " No detailed output returned.";
         }
       })
       .catch(err => {
-        resultDiv.textContent = " Error: " + err.message;
-        console.error(err);
+        outputDiv.textContent += " Error: " + err.message;
       });
     });
   </script>
