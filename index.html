@@ -71,7 +71,7 @@
   <div class="container">
     <h1> Slot Machine Math Analyzer</h1>
     <form id="slotForm">
-      <label>Total Number of Symbols 7877:
+      <label>Total Number of Symbols 11111:
         <input type="number" name="total_num_symbols" min="1" required />
       </label>
       <label>Number of Rows:
@@ -139,41 +139,49 @@
     wildSelect.addEventListener('change', () => {
       wildOptions.style.display = (wildSelect.value === 'true') ? 'block' : 'none';
     });
-    document.getElementById('slotForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const result = {};
-      for (let [key, value] of formData.entries()) {
-        if (value === 'true') result[key] = true;
-        else if (value === 'false') result[key] = false;
-        else if (!isNaN(value)) result[key] = Number(value);
-        else result[key] = value;
-      }
-      outputDiv.textContent = " Running analysis7878787...\n";
 
-fetch("https://d604e6eba51f.ngrok-free.app/receive", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(result)
-})
+document.getElementById('slotForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const result = {};
+  for (let [key, value] of formData.entries()) {
+    if (value === 'true') result[key] = true;
+    else if (value === 'false') result[key] = false;
+    else if (!isNaN(value)) result[key] = Number(value);
+    else result[key] = value;
+  }
 
+  outputDiv.textContent = "Running analysis...\n";
 
+  fetch("https://d604e6eba51f.ngrok-free.app/receive", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(result)
+  }).then(response => {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
 
-      
-      .then(res => res.json())
-      .then(data => {
-        if (data.output) {
-          outputDiv.textContent += data.output;
-        } else if (data.message) {
-          outputDiv.textContent += " " + data.message;
-        } else {
-          outputDiv.textContent += " No detailed output returned.";
+    function readStream() {
+      reader.read().then(({ done, value }) => {
+        if (done) {
+          outputDiv.textContent += "\n✅ Analysis finished.";
+          return;
         }
-      })
-      .catch(err => {
-        outputDiv.textContent += " Error: " + err.message;
+        const chunk = decoder.decode(value, { stream: true });
+        outputDiv.textContent += chunk;
+        outputDiv.scrollTop = outputDiv.scrollHeight; // auto-scroll to bottom
+        readStream(); // keep reading
       });
-    });
+    }
+
+    readStream();
+  }).catch(err => {
+    outputDiv.textContent += "\n❌ Error: " + err.message;
+  });
+});
+
+
+    
   </script>
 </body>
 </html>
