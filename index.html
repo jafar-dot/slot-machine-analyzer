@@ -9,7 +9,7 @@
       margin: 0;
       padding: 2rem 1rem;
       background: #f2f2f2;
-      font-family: 'Rubik', sans-serif;
+      font-family: 'Courier New', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,7 +34,7 @@
     label {
       display: block;
       margin-top: 1rem;
-      font-weight: 600;
+      font-weight: bold;
     }
 
     input, select {
@@ -62,27 +62,27 @@
       background-color: #005f49;
     }
 
-    /* ✅ Black box across entire screen width */
+    /* ✅ THE FIXED BLACK OUTPUT BOX */
     .output-box {
       background: #000;
       color: #00ff88;
       font-family: monospace;
-      white-space: nowrap;
+      white-space: pre; /* do not wrap */
       overflow-x: auto;
       overflow-y: auto;
-      width: 100vw;
+      width: 100%;
       max-width: 100vw;
       box-sizing: border-box;
       padding: 1rem;
       margin-top: 2rem;
-      min-height: 200px;
+      min-height: 300px;
       border-radius: 6px;
+      resize: vertical;
     }
 
     .output-line {
-      font-size: 20px;
-      line-height: 1.4;
       display: block;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -92,136 +92,143 @@
     <h1>Slot Machine Math Analyzer</h1>
     <form id="slotForm">
       <label>Total Number of Symbols:
-        <input type="number" name="total_num_symbols" min="1" required />
+        <input type="number" name="total_num_symbols" required />
       </label>
-      <label>Number of Rows:
-        <input type="number" name="rows" min="1" required />
+      <label>Rows:
+        <input type="number" name="rows" required />
       </label>
-      <label>Number of Columns:
-        <input type="number" name="columns" min="1" required />
+      <label>Columns:
+        <input type="number" name="columns" required />
       </label>
-      <label>Minimum Matching Symbols to Win:
-        <input type="number" name="min_win" min="1" required />
+      <label>Min Match to Win:
+        <input type="number" name="min_win" required />
       </label>
-      <label>Include Scatter Symbols?
-        <select name="scatter" id="scatterSelect" required>
+
+      <label>Scatter:
+        <select name="scatter" id="scatterSelect">
           <option value="false" selected>No</option>
           <option value="true">Yes</option>
         </select>
       </label>
+
       <div id="scatterOptions" style="display:none;">
-        <label>Minimum Scatters to Trigger Win:
-          <input type="number" name="min_win_scatter" min="1" />
+        <label>Min Win Scatter:
+          <input type="number" name="min_win_scatter" />
         </label>
-        <label>Free Spins Retigger Allowed?
+        <label>Free Spins Retigger:
           <select name="free_spins_retigger">
             <option value="false" selected>No</option>
             <option value="true">Yes</option>
           </select>
         </label>
         <label>Number of Free Spins:
-          <input type="number" name="num_free_spin" min="0" />
+          <input type="number" name="num_free_spin" />
         </label>
         <label>Multiplier:
-          <input type="number" name="multiplier" step="0.1" min="0" />
+          <input type="number" name="multiplier" step="0.1" />
         </label>
       </div>
-      <label>Include Wild Symbols?
-        <select name="wild" id="wildSelect" required>
+
+      <label>Wild:
+        <select name="wild" id="wildSelect">
           <option value="false" selected>No</option>
           <option value="true">Yes</option>
         </select>
       </label>
+
       <div id="wildOptions" style="display:none;">
         <label>Jackpot:
-          <input type="number" name="jackpot" min="0" />
+          <input type="number" name="jackpot" />
         </label>
       </div>
-      <label>Player Return (RTP %):
-        <input type="number" name="rtp" step="0.1" min="0" max="100" required />
+
+      <label>RTP:
+        <input type="number" name="rtp" step="0.1" required />
       </label>
       <label>RTP Range:
-        <input type="number" name="rtp_range" step="0.1" min="0" required />
+        <input type="number" name="rtp_range" step="0.1" required />
       </label>
+
       <button type="submit">Analyze</button>
     </form>
   </div>
 
-  <!-- ✅ Black Output Box -->
-  <div class="output-box" id="output"></div>
+  <!-- ✅ The Output -->
+  <div class="output-box" id="outputBox"></div>
 
   <script>
     const scatterSelect = document.getElementById('scatterSelect');
     const wildSelect = document.getElementById('wildSelect');
     const scatterOptions = document.getElementById('scatterOptions');
     const wildOptions = document.getElementById('wildOptions');
-    const outputDiv = document.getElementById('output');
 
     scatterSelect.addEventListener('change', () => {
-      scatterOptions.style.display = (scatterSelect.value === 'true') ? 'block' : 'none';
+      scatterOptions.style.display = scatterSelect.value === 'true' ? 'block' : 'none';
     });
 
     wildSelect.addEventListener('change', () => {
-      wildOptions.style.display = (wildSelect.value === 'true') ? 'block' : 'none';
+      wildOptions.style.display = wildSelect.value === 'true' ? 'block' : 'none';
     });
+
+    const outputBox = document.getElementById('outputBox');
 
     document.getElementById('slotForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      outputBox.innerHTML = '';
       const formData = new FormData(this);
-      const result = {};
-      for (let [key, value] of formData.entries()) {
-        if (value === 'true') result[key] = true;
-        else if (value === 'false') result[key] = false;
-        else if (!isNaN(value)) result[key] = Number(value);
-        else result[key] = value;
+      const data = {};
+
+      for (const [key, value] of formData.entries()) {
+        if (value === 'true') data[key] = true;
+        else if (value === 'false') data[key] = false;
+        else if (!isNaN(value)) data[key] = Number(value);
+        else data[key] = value;
       }
 
-      outputDiv.innerHTML = ""; // Clear previous output
-      appendLine("🚀 Running analysis...");
+      const appendLine = (text) => {
+        const line = document.createElement('div');
+        line.className = 'output-line';
+        line.textContent = text;
+
+        // ✅ Dynamically shrink font if line is too long
+        let fontSize = 18;
+        line.style.fontSize = fontSize + 'px';
+        outputBox.appendChild(line);
+
+        while (line.scrollWidth > outputBox.clientWidth && fontSize > 10) {
+          fontSize--;
+          line.style.fontSize = fontSize + 'px';
+        }
+
+        outputBox.scrollTop = outputBox.scrollHeight;
+      };
+
+      appendLine("🚀 Running analysis...\n");
 
       fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result)
-      }).then(response => {
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
+        body: JSON.stringify(data)
+      }).then(res => {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
 
-        function appendLine(text) {
-          const line = document.createElement('div');
-          line.className = 'output-line';
-          line.textContent = text;
-          outputDiv.appendChild(line);
-          adjustFontSize(line);
-          outputDiv.scrollTop = outputDiv.scrollHeight;
-        }
-
-        function adjustFontSize(el) {
-          const maxWidth = outputDiv.clientWidth - 40;
-          let fontSize = 20;
-          el.style.fontSize = fontSize + 'px';
-          while (el.scrollWidth > maxWidth && fontSize > 10) {
-            fontSize -= 1;
-            el.style.fontSize = fontSize + 'px';
-          }
-        }
-
-        function readStream() {
+        const readChunk = () => {
           reader.read().then(({ done, value }) => {
             if (done) {
               appendLine("✅ Analysis finished.");
               return;
             }
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-            lines.forEach(line => {
-              if (line.trim()) appendLine(line);
-            });
-            readStream();
+            const text = decoder.decode(value);
+            const lines = text.split('\n');
+            for (const line of lines) {
+              if (line.trim() !== '') appendLine(line);
+            }
+            readChunk();
           });
-        }
+        };
 
-        readStream();
+        readChunk();
       }).catch(err => {
         appendLine("❌ Error: " + err.message);
       });
