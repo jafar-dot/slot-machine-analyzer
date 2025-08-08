@@ -60,18 +60,24 @@
     button:hover {
       background-color: #005f49;
     }
-    .output-box {
+  .output-box {
   margin-top: 2rem;
   background: #1e1e1e;
   color: #00ff88;
   padding: 1rem;
   border-radius: 6px;
-  min-height: 150px;
   font-family: monospace;
-  white-space: pre-wrap;
-  overflow-y: visible; 
-  max-height: none; 
+
+  min-height: 150px;
+  height: auto;        
+  
+  max-width: 100vw;     
+  white-space: nowrap; 
+  overflow-x: hidden;   
+  
+  font-size: clamp(12px, 4vw, 24px); 
 }
+
 
   </style>
 </head>
@@ -79,7 +85,7 @@
   <div class="container">
     <h1> Slot Machine Math Analyzer</h1>
     <form id="slotForm">
-      <label>Total Number of Symbols:
+      <label>Enter total Number of Symbols:
         <input type="number" name="total_num_symbols" min="1" required />
       </label>
       <label>Number of Rows:
