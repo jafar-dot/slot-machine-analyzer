@@ -67,18 +67,15 @@
   padding: 1rem;
   border-radius: 6px;
   font-family: monospace;
-
   min-height: 150px;
-  height: auto;        
-  
-  max-width: 100vw;     
-  white-space: nowrap; 
-  overflow-x: hidden;   
-  
-  font-size: clamp(12px, 4vw, 24px); 
+  height: auto;
+  width: 100%;
+  max-width: 100vw;
+  white-space: nowrap;
+  overflow-x: hidden;
+  font-size: 24px;
+  transition: font-size 0.2s ease;
 }
-
-
   </style>
 </head>
 <body>
@@ -134,7 +131,7 @@
       <label>Player Return (RTP %):
         <input type="number" name="rtp" step="0.1" min="0" max="100" required />
       </label>
-      <label>RTP Range:
+      <label>RTP Range(-+):
         <input type="number" name="rtp_range" step="0.1" min="0" required />
       </label>
       <button type="submit"> Analyze</button>
@@ -153,7 +150,6 @@
     wildSelect.addEventListener('change', () => {
       wildOptions.style.display = (wildSelect.value === 'true') ? 'block' : 'none';
     });
-
 document.getElementById('slotForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const formData = new FormData(this);
@@ -164,9 +160,7 @@ document.getElementById('slotForm').addEventListener('submit', function(e) {
     else if (!isNaN(value)) result[key] = Number(value);
     else result[key] = value;
   }
-
   outputDiv.textContent = "Running analysis...\n";
-
   fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -174,7 +168,6 @@ document.getElementById('slotForm').addEventListener('submit', function(e) {
   }).then(response => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
-
     function readStream() {
       reader.read().then(({ done, value }) => {
         if (done) {
@@ -183,19 +176,28 @@ document.getElementById('slotForm').addEventListener('submit', function(e) {
         }
         const chunk = decoder.decode(value, { stream: true });
         outputDiv.textContent += chunk;
-        outputDiv.scrollTop = outputDiv.scrollHeight; // auto-scroll to bottom
-        readStream(); // keep reading
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+        readStream();
       });
     }
-
     readStream();
   }).catch(err => {
     outputDiv.textContent += "\n❌ Error: " + err.message;
   });
 });
-
-
-    
+  </script>
+  <script>
+    function fitTextToBox() {
+      const box = document.getElementById('output');
+      const maxWidth = box.clientWidth;
+      let fontSize = parseFloat(window.getComputedStyle(box).fontSize);
+      while (box.scrollWidth > maxWidth && fontSize > 8) {
+        fontSize -= 1;
+        box.style.fontSize = fontSize + 'px';
+      }
+    }
+    window.addEventListener('resize', fitTextToBox);
+    window.addEventListener('load', fitTextToBox);
   </script>
 </body>
 </html>
