@@ -61,29 +61,36 @@
       background-color: #005f49;
     }
     .output-box {
-  margin-top: 2rem;
-  background: #1e1e1e;
-  color: #00ff88;
-  padding: 1rem;
-  border-radius: 6px;
-  min-height: 150px;
-  font-family: monospace;
-  white-space: nowrap;
-  overflow-x: hidden;
-  overflow-y: visible;   /* Changed from auto */
-  height: auto;          /* Allow height to grow */
-  width: 100%;
-  font-size: 24px;
-  transition: font-size 0.15s ease;
-}
-
+      margin: 2rem auto 0 auto;
+      background: #1e1e1e;
+      color: #00ff88;
+      padding: 1rem;
+      border-radius: 6px;
+      min-height: 150px;
+      max-width: 800px;
+      width: 100%;
+      font-family: monospace;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: auto;
+      box-sizing: border-box;
+    }
+    .output-line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 24px;
+      transition: font-size 0.15s ease;
+      margin-bottom: 2px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1> Slot Machine Math Analyzer</h1>
+    <h1>Slot Machine Math Analyzer</h1>
     <form id="slotForm">
-      <label>Total Number of Symbols 11111:
+      <label>Enter total Number of Symbols 11111:
         <input type="number" name="total_num_symbols" min="1" required />
       </label>
       <label>Number of Rows:
@@ -135,7 +142,7 @@
       <label>RTP Range:
         <input type="number" name="rtp_range" step="0.1" min="0" required />
       </label>
-      <button type="submit"> Analyze</button>
+      <button type="submit">Analyze</button>
     </form>
     <div class="output-box" id="output">Waiting for analysis...</div>
   </div>
@@ -165,8 +172,9 @@
         else result[key] = value;
       }
 
-      outputDiv.textContent = "Running analysis...\n";
-      resetFontSize();
+      outputDiv.innerHTML = ""; // clear previous output
+
+      appendLine("Running analysis...");
 
       fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
         method: "POST",
@@ -179,42 +187,39 @@
         function readStream() {
           reader.read().then(({ done, value }) => {
             if (done) {
-              outputDiv.textContent += "\n✅ Analysis finished.";
-              adjustFontSize();
+              appendLine("✅ Analysis finished.");
               return;
             }
             const chunk = decoder.decode(value, { stream: true });
-            outputDiv.textContent += chunk;
-            outputDiv.scrollTop = outputDiv.scrollHeight;
-            adjustFontSize();
+            chunk.split('\n').forEach(line => {
+              if(line.trim()) appendLine(line);
+            });
             readStream();
           });
         }
-
         readStream();
       }).catch(err => {
-        outputDiv.textContent += "\n❌ Error: " + err.message;
-        adjustFontSize();
+        appendLine("❌ Error: " + err.message);
       });
     });
 
-    function resetFontSize() {
-      outputDiv.style.fontSize = '24px';
+    function appendLine(text) {
+      const lineDiv = document.createElement('div');
+      lineDiv.classList.add('output-line');
+      lineDiv.textContent = text;
+      outputDiv.appendChild(lineDiv);
+      adjustFontSize(lineDiv);
+      outputDiv.scrollTop = outputDiv.scrollHeight;
     }
 
-    function adjustFontSize() {
+    function adjustFontSize(lineDiv) {
       const maxWidth = outputDiv.clientWidth;
-      let fontSize = parseFloat(window.getComputedStyle(outputDiv).fontSize);
-      while (outputDiv.scrollWidth > maxWidth && fontSize > 8) {
+      let fontSize = parseFloat(window.getComputedStyle(lineDiv).fontSize);
+      while (lineDiv.scrollWidth > maxWidth && fontSize > 8) {
         fontSize -= 1;
-        outputDiv.style.fontSize = fontSize + 'px';
+        lineDiv.style.fontSize = fontSize + 'px';
       }
     }
-
-    window.addEventListener('resize', () => {
-      resetFontSize();
-      adjustFontSize();
-    });
   </script>
 </body>
 </html>
