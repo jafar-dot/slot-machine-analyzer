@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Slot Machine Math Analyzer</title>
   <style>
-       body {
-  margin: 0;
-  padding: 2rem 1rem;
-  background: url('background.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Rubik', sans-serif;
-  color: var(--color-text);
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  align-items: flex-start;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-   }
+    body {
+      margin: 0;
+      padding: 2rem 1rem;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Rubik', sans-serif;
+      color: var(--color-text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      align-items: flex-start;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
     .container {
       max-width: 800px;
       margin: auto;
@@ -60,29 +60,30 @@
     button:hover {
       background-color: #005f49;
     }
-  .output-box {
+    .output-box {
   margin-top: 2rem;
   background: #1e1e1e;
   color: #00ff88;
   padding: 1rem;
   border-radius: 6px;
-  font-family: monospace;
   min-height: 150px;
-  height: auto;
-  width: 100%;
-  max-width: 100vw;
+  font-family: monospace;
   white-space: nowrap;
   overflow-x: hidden;
+  overflow-y: visible;   /* Changed from auto */
+  height: auto;          /* Allow height to grow */
+  width: 100%;
   font-size: 24px;
-  transition: font-size 0.2s ease;
+  transition: font-size 0.15s ease;
 }
+
   </style>
 </head>
 <body>
   <div class="container">
     <h1> Slot Machine Math Analyzer</h1>
     <form id="slotForm">
-      <label>Enter total Number of Symbols:
+      <label>Total Number of Symbols 11111:
         <input type="number" name="total_num_symbols" min="1" required />
       </label>
       <label>Number of Rows:
@@ -91,7 +92,7 @@
       <label>Number of Columns:
         <input type="number" name="columns" min="1" required />
       </label>
-      <label>Minimum Matching Symbols to Win:
+      <label>Minimum Matching Symbols to Win--:
         <input type="number" name="min_win" min="1" required />
       </label>
       <label>Include Scatter Symbols?
@@ -144,62 +145,76 @@
     const scatterOptions = document.getElementById('scatterOptions');
     const wildOptions = document.getElementById('wildOptions');
     const outputDiv = document.getElementById('output');
+
     scatterSelect.addEventListener('change', () => {
       scatterOptions.style.display = (scatterSelect.value === 'true') ? 'block' : 'none';
     });
+
     wildSelect.addEventListener('change', () => {
       wildOptions.style.display = (wildSelect.value === 'true') ? 'block' : 'none';
     });
-document.getElementById('slotForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  const result = {};
-  for (let [key, value] of formData.entries()) {
-    if (value === 'true') result[key] = true;
-    else if (value === 'false') result[key] = false;
-    else if (!isNaN(value)) result[key] = Number(value);
-    else result[key] = value;
-  }
-  outputDiv.textContent = "Running analysis...\n";
-  fitTextToBox();
-  fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(result)
-  }).then(response => {
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    function readStream() {
-      reader.read().then(({ done, value }) => {
-        if (done) {
-          outputDiv.textContent += "\n✅ Analysis finished.";
-          fitTextToBox();
-          return;
+
+    document.getElementById('slotForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const result = {};
+      for (let [key, value] of formData.entries()) {
+        if (value === 'true') result[key] = true;
+        else if (value === 'false') result[key] = false;
+        else if (!isNaN(value)) result[key] = Number(value);
+        else result[key] = value;
+      }
+
+      outputDiv.textContent = "Running analysis...\n";
+      resetFontSize();
+
+      fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result)
+      }).then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        function readStream() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              outputDiv.textContent += "\n✅ Analysis finished.";
+              adjustFontSize();
+              return;
+            }
+            const chunk = decoder.decode(value, { stream: true });
+            outputDiv.textContent += chunk;
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+            adjustFontSize();
+            readStream();
+          });
         }
-        const chunk = decoder.decode(value, { stream: true });
-        outputDiv.textContent += chunk;
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-        fitTextToBox();
+
         readStream();
+      }).catch(err => {
+        outputDiv.textContent += "\n❌ Error: " + err.message;
+        adjustFontSize();
       });
+    });
+
+    function resetFontSize() {
+      outputDiv.style.fontSize = '24px';
     }
-    readStream();
-  }).catch(err => {
-    outputDiv.textContent += "\n❌ Error: " + err.message;
-    fitTextToBox();
-  });
-});
-function fitTextToBox() {
-  const box = document.getElementById('output');
-  const maxWidth = box.clientWidth;
-  let fontSize = parseFloat(window.getComputedStyle(box).fontSize);
-  while (box.scrollWidth > maxWidth && fontSize > 8) {
-    fontSize -= 1;
-    box.style.fontSize = fontSize + 'px';
-  }
-}
-window.addEventListener('resize', fitTextToBox);
-window.addEventListener('load', fitTextToBox);
+
+    function adjustFontSize() {
+      const maxWidth = outputDiv.clientWidth;
+      let fontSize = parseFloat(window.getComputedStyle(outputDiv).fontSize);
+      while (outputDiv.scrollWidth > maxWidth && fontSize > 8) {
+        fontSize -= 1;
+        outputDiv.style.fontSize = fontSize + 'px';
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      resetFontSize();
+      adjustFontSize();
+    });
   </script>
 </body>
 </html>
