@@ -8,36 +8,35 @@
     body {
       margin: 0;
       padding: 2rem 1rem;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: #f2f2f2;
       font-family: 'Rubik', sans-serif;
-      color: var(--color-text);
       display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      align-items: flex-start;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      flex-direction: column;
+      align-items: center;
     }
+
     .container {
       max-width: 800px;
-      margin: auto;
+      width: 100%;
       background: white;
       padding: 2rem;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 2rem;
       font-size: 1.8rem;
       color: #007b5e;
+      margin-bottom: 2rem;
     }
+
     label {
       display: block;
       margin-top: 1rem;
       font-weight: 600;
     }
+
     input, select {
       width: 100%;
       padding: 0.5rem;
@@ -46,6 +45,7 @@
       border: 1px solid #ccc;
       font-size: 1rem;
     }
+
     button {
       margin-top: 2rem;
       width: 100%;
@@ -57,33 +57,39 @@
       font-size: 1rem;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #005f49;
     }
 
+    /* ✅ Black box across entire screen width */
     .output-box {
-      margin-top: 2rem;
-      background: #1e1e1e;
+      background: #000;
       color: #00ff88;
-      padding: 1rem;
-      border-radius: 6px;
       font-family: monospace;
-      white-space: pre-wrap;
+      white-space: nowrap;
+      overflow-x: auto;
       overflow-y: auto;
-      width: 100%;
+      width: 100vw;
       max-width: 100vw;
-      height: auto;
+      box-sizing: border-box;
+      padding: 1rem;
+      margin-top: 2rem;
+      min-height: 200px;
+      border-radius: 6px;
     }
 
     .output-line {
       font-size: 20px;
-      white-space: pre-wrap;
+      line-height: 1.4;
+      display: block;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>-Slot Machine Math Analyzer-</h1>
+    <h1>Slot Machine Math Analyzer</h1>
     <form id="slotForm">
       <label>Total Number of Symbols:
         <input type="number" name="total_num_symbols" min="1" required />
@@ -139,8 +145,10 @@
       </label>
       <button type="submit">Analyze</button>
     </form>
-    <div class="output-box" id="output"></div>
   </div>
+
+  <!-- ✅ Black Output Box -->
+  <div class="output-box" id="output"></div>
 
   <script>
     const scatterSelect = document.getElementById('scatterSelect');
@@ -168,12 +176,8 @@
         else result[key] = value;
       }
 
-      outputDiv.innerHTML = ""; // clear output
-
-      const firstLine = document.createElement('div');
-      firstLine.className = 'output-line';
-      firstLine.textContent = "Running analysis...\n";
-      outputDiv.appendChild(firstLine);
+      outputDiv.innerHTML = ""; // Clear previous output
+      appendLine("🚀 Running analysis...");
 
       fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
         method: "POST",
@@ -183,50 +187,43 @@
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
 
-        function adjustFontSize(lineDiv) {
-          const maxWidth = outputDiv.clientWidth;
-          let fontSize = 20;
-          const minFont = 12;
-          lineDiv.style.fontSize = fontSize + 'px';
+        function appendLine(text) {
+          const line = document.createElement('div');
+          line.className = 'output-line';
+          line.textContent = text;
+          outputDiv.appendChild(line);
+          adjustFontSize(line);
+          outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
 
-          while (lineDiv.scrollWidth > maxWidth && fontSize > minFont) {
-            fontSize--;
-            lineDiv.style.fontSize = fontSize + 'px';
+        function adjustFontSize(el) {
+          const maxWidth = outputDiv.clientWidth - 40;
+          let fontSize = 20;
+          el.style.fontSize = fontSize + 'px';
+          while (el.scrollWidth > maxWidth && fontSize > 10) {
+            fontSize -= 1;
+            el.style.fontSize = fontSize + 'px';
           }
         }
 
         function readStream() {
           reader.read().then(({ done, value }) => {
             if (done) {
-              const doneLine = document.createElement('div');
-              doneLine.className = 'output-line';
-              doneLine.textContent = "\n✅ Analysis finished.";
-              outputDiv.appendChild(doneLine);
-              outputDiv.scrollTop = outputDiv.scrollHeight;
+              appendLine("✅ Analysis finished.");
               return;
             }
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n');
             lines.forEach(line => {
-              if (line.trim() !== "") {
-                const lineDiv = document.createElement('div');
-                lineDiv.className = 'output-line';
-                lineDiv.textContent = line;
-                outputDiv.appendChild(lineDiv);
-                adjustFontSize(lineDiv);
-              }
+              if (line.trim()) appendLine(line);
             });
-            outputDiv.scrollTop = outputDiv.scrollHeight;
             readStream();
           });
         }
 
         readStream();
       }).catch(err => {
-        const errLine = document.createElement('div');
-        errLine.className = 'output-line';
-        errLine.textContent = "\n❌ Error: " + err.message;
-        outputDiv.appendChild(errLine);
+        appendLine("❌ Error: " + err.message);
       });
     });
   </script>
