@@ -131,7 +131,7 @@
       <label>Player Return (RTP %):
         <input type="number" name="rtp" step="0.1" min="0" max="100" required />
       </label>
-      <label>RTP Range(-+):
+      <label>RTP Range:
         <input type="number" name="rtp_range" step="0.1" min="0" required />
       </label>
       <button type="submit"> Analyze</button>
@@ -161,6 +161,7 @@ document.getElementById('slotForm').addEventListener('submit', function(e) {
     else result[key] = value;
   }
   outputDiv.textContent = "Running analysis...\n";
+  fitTextToBox();
   fetch("https://chigger-blessed-bat.ngrok-free.app/receive", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -172,32 +173,33 @@ document.getElementById('slotForm').addEventListener('submit', function(e) {
       reader.read().then(({ done, value }) => {
         if (done) {
           outputDiv.textContent += "\n✅ Analysis finished.";
+          fitTextToBox();
           return;
         }
         const chunk = decoder.decode(value, { stream: true });
         outputDiv.textContent += chunk;
         outputDiv.scrollTop = outputDiv.scrollHeight;
+        fitTextToBox();
         readStream();
       });
     }
     readStream();
   }).catch(err => {
     outputDiv.textContent += "\n❌ Error: " + err.message;
+    fitTextToBox();
   });
 });
-  </script>
-  <script>
-    function fitTextToBox() {
-      const box = document.getElementById('output');
-      const maxWidth = box.clientWidth;
-      let fontSize = parseFloat(window.getComputedStyle(box).fontSize);
-      while (box.scrollWidth > maxWidth && fontSize > 8) {
-        fontSize -= 1;
-        box.style.fontSize = fontSize + 'px';
-      }
-    }
-    window.addEventListener('resize', fitTextToBox);
-    window.addEventListener('load', fitTextToBox);
+function fitTextToBox() {
+  const box = document.getElementById('output');
+  const maxWidth = box.clientWidth;
+  let fontSize = parseFloat(window.getComputedStyle(box).fontSize);
+  while (box.scrollWidth > maxWidth && fontSize > 8) {
+    fontSize -= 1;
+    box.style.fontSize = fontSize + 'px';
+  }
+}
+window.addEventListener('resize', fitTextToBox);
+window.addEventListener('load', fitTextToBox);
   </script>
 </body>
 </html>
