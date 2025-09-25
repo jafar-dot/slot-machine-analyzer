@@ -192,7 +192,7 @@ body {
         line.className = 'output-line';
         line.textContent = text;
 
-        // ✅ Dynamically shrink font if line is too long
+  
         let fontSize = 18;
         line.style.fontSize = fontSize + 'px';
         outputBox.appendChild(line);
@@ -207,7 +207,7 @@ body {
 
       appendLine("🚀 Running analysis...\n");
 
-      fetch("https://6937186385e1.ngrok-free.app/receive", {
+      fetch("https://8bc048f806eb.ngrok-free.app/receive", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
