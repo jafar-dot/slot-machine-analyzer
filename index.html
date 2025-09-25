@@ -16,76 +16,103 @@ body {
   align-items: center;
 }
 
+.container {
+  max-width: 800px;
+  width: 100%;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
-    .container {
-      max-width: 800px;
-      width: 100%;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #007b5e;
+  margin-bottom: 2rem;
+}
 
-    h1 {
-      text-align: center;
-      font-size: 1.8rem;
-      color: #007b5e;
-      margin-bottom: 2rem;
-    }
+label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
 
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
+input, select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
 
-    input, select {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.4rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
+button {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007b5e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
 
-    button {
-      margin-top: 2rem;
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #007b5e;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+button:hover {
+  background-color: #005f49;
+}
 
-    button:hover {
-      background-color: #005f49;
-    }
+/* ✅ THE FIXED BLACK OUTPUT BOX */
+.output-box {
+  background: #000;
+  color: #00ff88;
+  font-family: monospace;
+  white-space: pre; /* do not wrap */
+  overflow-x: auto;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  padding: 1rem;
+  margin-top: 2rem;
+  min-height: 300px;
+  border-radius: 6px;
+  resize: vertical;
+}
 
-    /* ✅ THE FIXED BLACK OUTPUT BOX */
-    .output-box {
-      background: #000;
-      color: #00ff88;
-      font-family: monospace;
-      white-space: pre; /* do not wrap */
-      overflow-x: auto;
-      overflow-y: auto;
-      width: 100%;
-      max-width: 100vw;
-      box-sizing: border-box;
-      padding: 1rem;
-      margin-top: 2rem;
-      min-height: 300px;
-      border-radius: 6px;
-      resize: vertical;
-    }
+.output-line {
+  display: block;
+  font-size: 18px;
+}
 
-    .output-line {
-      display: block;
-      font-size: 18px;
-    }
+/* ✅ NEW BUTTON-STYLE CHOICES */
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.choice-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  background: #f0f0f0;
+  border: 2px solid #007b5e;
+  color: #007b5e;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.choice-btn:hover {
+  background: #007b5e;
+  color: white;
+}
+
+input[type="radio"]:checked + .choice-btn {
+  background: #007b5e;
+  color: white;
+}
   </style>
 </head>
 <body>
@@ -106,23 +133,27 @@ body {
         <input type="number" name="min_win" required />
       </label>
 
-      <label>Scatter:
-        <select name="scatter" id="scatterSelect">
-          <option value="false" selected>No</option>
-          <option value="true">Yes</option>
-        </select>
-      </label>
+      <label>Scatter:</label>
+      <div class="button-group" id="scatterChoice">
+        <input type="radio" id="scatterNo" name="scatter" value="false" checked hidden>
+        <label for="scatterNo" class="choice-btn">No</label>
+
+        <input type="radio" id="scatterYes" name="scatter" value="true" hidden>
+        <label for="scatterYes" class="choice-btn">Yes</label>
+      </div>
 
       <div id="scatterOptions" style="display:none;">
         <label>Min Win Scatter:
           <input type="number" name="min_win_scatter" />
         </label>
-        <label>Free Spins Retigger:
-          <select name="free_spins_retigger">
-            <option value="false" selected>No</option>
-            <option value="true">Yes</option>
-          </select>
-        </label>
+        <label>Free Spins Retigger:</label>
+        <div class="button-group">
+          <input type="radio" id="fsNo" name="free_spins_retigger" value="false" checked hidden>
+          <label for="fsNo" class="choice-btn">No</label>
+
+          <input type="radio" id="fsYes" name="free_spins_retigger" value="true" hidden>
+          <label for="fsYes" class="choice-btn">Yes</label>
+        </div>
         <label>Number of Free Spins:
           <input type="number" name="num_free_spin" />
         </label>
@@ -131,12 +162,14 @@ body {
         </label>
       </div>
 
-      <label>Wild:
-        <select name="wild" id="wildSelect">
-          <option value="false" selected>No</option>
-          <option value="true">Yes</option>
-        </select>
-      </label>
+      <label>Wild:</label>
+      <div class="button-group" id="wildChoice">
+        <input type="radio" id="wildNo" name="wild" value="false" checked hidden>
+        <label for="wildNo" class="choice-btn">No</label>
+
+        <input type="radio" id="wildYes" name="wild" value="true" hidden>
+        <label for="wildYes" class="choice-btn">Yes</label>
+      </div>
 
       <div id="wildOptions" style="display:none;">
         <label>Jackpot:
@@ -159,17 +192,19 @@ body {
   <div class="output-box" id="outputBox"></div>
 
   <script>
-    const scatterSelect = document.getElementById('scatterSelect');
-    const wildSelect = document.getElementById('wildSelect');
+    const scatterChoice = document.getElementById('scatterChoice');
+    const wildChoice = document.getElementById('wildChoice');
     const scatterOptions = document.getElementById('scatterOptions');
     const wildOptions = document.getElementById('wildOptions');
 
-    scatterSelect.addEventListener('change', () => {
-      scatterOptions.style.display = scatterSelect.value === 'true' ? 'block' : 'none';
+    scatterChoice.addEventListener('change', () => {
+      const val = document.querySelector('input[name="scatter"]:checked').value;
+      scatterOptions.style.display = val === 'true' ? 'block' : 'none';
     });
 
-    wildSelect.addEventListener('change', () => {
-      wildOptions.style.display = wildSelect.value === 'true' ? 'block' : 'none';
+    wildChoice.addEventListener('change', () => {
+      const val = document.querySelector('input[name="wild"]:checked').value;
+      wildOptions.style.display = val === 'true' ? 'block' : 'none';
     });
 
     const outputBox = document.getElementById('outputBox');
@@ -192,7 +227,6 @@ body {
         line.className = 'output-line';
         line.textContent = text;
 
-  
         let fontSize = 18;
         line.style.fontSize = fontSize + 'px';
         outputBox.appendChild(line);
