@@ -23,53 +23,36 @@ body {
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
   font-size: 1.8rem;
   color: #007b5e;
   margin-bottom: 2rem;
 }
 
-label {
+/* 🔥 bottom clickable label */
+.send-label {
   display: block;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-input, select {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.4rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-button {
   margin-top: 2rem;
-  width: 100%;
   padding: 0.75rem;
   background-color: #007b5e;
   color: white;
-  border: none;
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
 }
-
-button:hover {
+.send-label:hover {
   background-color: #005f49;
 }
 
-/* ✅ THE FIXED BLACK OUTPUT BOX */
+/* ✅ Output box */
 .output-box {
   background: #000;
   color: #00ff88;
   font-family: monospace;
-  white-space: pre; /* do not wrap */
-  overflow-x: auto;
+  white-space: pre;
   overflow-y: auto;
   width: 100%;
   max-width: 100vw;
@@ -85,161 +68,38 @@ button:hover {
   display: block;
   font-size: 18px;
 }
-
-/* ✅ NEW BUTTON-STYLE CHOICES */
-.button-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.choice-btn {
-  padding: 0.5rem 1.2rem;
-  border-radius: 6px;
-  background: #f0f0f0;
-  border: 2px solid #007b5e;
-  color: #007b5e;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.choice-btn:hover {
-  background: #007b5e;
-  color: white;
-}
-
-input[type="radio"]:checked + .choice-btn {
-  background: #007b5e;
-  color: white;
-}
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>Slot Machine Math Analyzer</h1>
-    <form id="slotForm">
-      <label>Total Number of Symbols:
-        <input type="number" name="total_num_symbols" required />
-      </label>
-      <label>Rows:
-        <input type="number" name="rows" required />
-      </label>
-      <label>Columns:
-        <input type="number" name="columns" required />
-      </label>
-      <label>Min Match to Win:
-        <input type="number" name="min_win" required />
-      </label>
 
-      <label>Scatter:</label>
-      <div class="button-group" id="scatterChoice">
-        <input type="radio" id="scatterNo" name="scatter" value="false" checked hidden>
-        <label for="scatterNo" class="choice-btn">No</label>
-
-        <input type="radio" id="scatterYes" name="scatter" value="true" hidden>
-        <label for="scatterYes" class="choice-btn">Yes</label>
-      </div>
-
-      <div id="scatterOptions" style="display:none;">
-        <label>Min Win Scatter:
-          <input type="number" name="min_win_scatter" />
-        </label>
-        <label>Free Spins Retigger:</label>
-        <div class="button-group">
-          <input type="radio" id="fsNo" name="free_spins_retigger" value="false" checked hidden>
-          <label for="fsNo" class="choice-btn">No</label>
-
-          <input type="radio" id="fsYes" name="free_spins_retigger" value="true" hidden>
-          <label for="fsYes" class="choice-btn">Yes</label>
-        </div>
-        <label>Number of Free Spins:
-          <input type="number" name="num_free_spin" />
-        </label>
-        <label>Multiplier:
-          <input type="number" name="multiplier" step="0.1" />
-        </label>
-      </div>
-
-      <label>Wild:</label>
-      <div class="button-group" id="wildChoice">
-        <input type="radio" id="wildNo" name="wild" value="false" checked hidden>
-        <label for="wildNo" class="choice-btn">No</label>
-
-        <input type="radio" id="wildYes" name="wild" value="true" hidden>
-        <label for="wildYes" class="choice-btn">Yes</label>
-      </div>
-
-      <div id="wildOptions" style="display:none;">
-        <label>Jackpot:
-          <input type="number" name="jackpot" />
-        </label>
-      </div>
-
-      <label>RTP:
-        <input type="number" name="rtp" step="0.1" required />
-      </label>
-      <label>RTP Range:
-        <input type="number" name="rtp_range" step="0.1" required />
-      </label>
-
-      <button type="submit">Analyze</button>
-    </form>
+    <!-- 🔥 ONLY ONE LABEL -->
+    <label class="send-label" id="sendLabel">Send Analysis</label>
   </div>
 
-  <!-- ✅ The Output -->
+  <!-- ✅ Output -->
   <div class="output-box" id="outputBox"></div>
 
   <script>
-    const scatterChoice = document.getElementById('scatterChoice');
-    const wildChoice = document.getElementById('wildChoice');
-    const scatterOptions = document.getElementById('scatterOptions');
-    const wildOptions = document.getElementById('wildOptions');
-
-    scatterChoice.addEventListener('change', () => {
-      const val = document.querySelector('input[name="scatter"]:checked').value;
-      scatterOptions.style.display = val === 'true' ? 'block' : 'none';
-    });
-
-    wildChoice.addEventListener('change', () => {
-      const val = document.querySelector('input[name="wild"]:checked').value;
-      wildOptions.style.display = val === 'true' ? 'block' : 'none';
-    });
-
     const outputBox = document.getElementById('outputBox');
+    const sendLabel = document.getElementById('sendLabel');
 
-    document.getElementById('slotForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    sendLabel.addEventListener('click', function() {
       outputBox.innerHTML = '';
-      const formData = new FormData(this);
-      const data = {};
 
-      for (const [key, value] of formData.entries()) {
-        if (value === 'true') data[key] = true;
-        else if (value === 'false') data[key] = false;
-        else if (!isNaN(value)) data[key] = Number(value);
-        else data[key] = value;
-      }
+      const data = { message: "Send Analysis" }; // 🔥 fixed text only
 
       const appendLine = (text) => {
         const line = document.createElement('div');
         line.className = 'output-line';
         line.textContent = text;
-
-        let fontSize = 18;
-        line.style.fontSize = fontSize + 'px';
         outputBox.appendChild(line);
-
-        while (line.scrollWidth > outputBox.clientWidth && fontSize > 10) {
-          fontSize--;
-          line.style.fontSize = fontSize + 'px';
-        }
-
         outputBox.scrollTop = outputBox.scrollHeight;
       };
 
-      appendLine("🚀 Running analysis...\n");
+      appendLine("🚀 Sending analysis...\n");
 
       fetch("https://8bc048f806eb.ngrok-free.app/receive", {
         method: "POST",
