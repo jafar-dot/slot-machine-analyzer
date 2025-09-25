@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>-Slot Machine Math Analyzer-</title>
+  <title>Slot Machine Math Analyzer</title>
   <style>
 body {
   margin: 0;
@@ -29,13 +29,24 @@ body {
 h1 {
   font-size: 1.8rem;
   color: #007b5e;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* 🔥 bottom clickable label */
+/* 🔥 text box */
+#messageInput {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  resize: vertical;
+}
+
+/* 🔥 clickable label */
 .send-label {
   display: block;
-  margin-top: 2rem;
   padding: 0.75rem;
   background-color: #007b5e;
   color: white;
@@ -75,8 +86,11 @@ h1 {
   <div class="container">
     <h1>Slot Machine Math Analyzer</h1>
 
-    <!-- 🔥 ONLY ONE LABEL -->
-    <label class="send-label" id="sendLabel">Send Analysis</label>
+    <!-- 🔥 text field for your message -->
+    <textarea id="messageInput" placeholder="Write your message here..."></textarea>
+
+    <!-- 🔥 label to send -->
+    <label class="send-label" id="sendLabel">Send Message</label>
   </div>
 
   <!-- ✅ Output -->
@@ -85,11 +99,12 @@ h1 {
   <script>
     const outputBox = document.getElementById('outputBox');
     const sendLabel = document.getElementById('sendLabel');
+    const messageInput = document.getElementById('messageInput');
 
     sendLabel.addEventListener('click', function() {
       outputBox.innerHTML = '';
 
-      const data = { message: "Send Analysis" }; // 🔥 fixed text only
+      const data = { message: messageInput.value }; // 🔥 sends what you typed
 
       const appendLine = (text) => {
         const line = document.createElement('div');
@@ -99,7 +114,7 @@ h1 {
         outputBox.scrollTop = outputBox.scrollHeight;
       };
 
-      appendLine("🚀 Sending analysis...\n");
+      appendLine("🚀 Sending message...\n");
 
       fetch("https://8bc048f806eb.ngrok-free.app/receive", {
         method: "POST",
@@ -112,7 +127,7 @@ h1 {
         const readChunk = () => {
           reader.read().then(({ done, value }) => {
             if (done) {
-              appendLine("✅ Analysis finished.");
+              appendLine("✅ Done.");
               return;
             }
             const text = decoder.decode(value);
