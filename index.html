@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Slot Machine Math Analyzer</title>
+  <title>-Slot Machine Math Analyzer-</title>
   <style>
 body {
   margin: 0;
@@ -16,107 +16,198 @@ body {
   align-items: center;
 }
 
-.container {
-  max-width: 800px;
-  width: 100%;
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: center;
-}
 
-h1 {
-  font-size: 1.8rem;
-  color: #007b5e;
-  margin-bottom: 1rem;
-}
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
 
-/* 🔥 text box */
-#messageInput {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  resize: vertical;
-}
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      color: #007b5e;
+      margin-bottom: 2rem;
+    }
 
-/* 🔥 clickable label */
-.send-label {
-  display: block;
-  padding: 0.75rem;
-  background-color: #007b5e;
-  color: white;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-.send-label:hover {
-  background-color: #005f49;
-}
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
 
-/* ✅ Output box */
-.output-box {
-  background: #000;
-  color: #00ff88;
-  font-family: monospace;
-  white-space: pre;
-  overflow-y: auto;
-  width: 100%;
-  max-width: 100vw;
-  box-sizing: border-box;
-  padding: 1rem;
-  margin-top: 2rem;
-  min-height: 300px;
-  border-radius: 6px;
-  resize: vertical;
-}
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.4rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
 
-.output-line {
-  display: block;
-  font-size: 18px;
-}
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005f49;
+    }
+
+    /* ✅ THE FIXED BLACK OUTPUT BOX */
+    .output-box {
+      background: #000;
+      color: #00ff88;
+      font-family: monospace;
+      white-space: pre; /* do not wrap */
+      overflow-x: auto;
+      overflow-y: auto;
+      width: 100%;
+      max-width: 100vw;
+      box-sizing: border-box;
+      padding: 1rem;
+      margin-top: 2rem;
+      min-height: 300px;
+      border-radius: 6px;
+      resize: vertical;
+    }
+
+    .output-line {
+      display: block;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>Slot Machine Math Analyzer</h1>
+    <form id="slotForm">
+      <label>Total Number of Symbols:
+        <input type="number" name="total_num_symbols" required />
+      </label>
+      <label>Rows:
+        <input type="number" name="rows" required />
+      </label>
+      <label>Columns:
+        <input type="number" name="columns" required />
+      </label>
+      <label>Min Match to Win:
+        <input type="number" name="min_win" required />
+      </label>
 
-    <!-- 🔥 text field for your message -->
-    <textarea id="messageInput" placeholder="Write your message here..."></textarea>
+      <label>Scatter:
+        <select name="scatter" id="scatterSelect">
+          <option value="false" selected>No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
 
-    <!-- 🔥 label to send -->
-    <label class="send-label" id="sendLabel">Send Message</label>
+      <div id="scatterOptions" style="display:none;">
+        <label>Min Win Scatter:
+          <input type="number" name="min_win_scatter" />
+        </label>
+        <label>Free Spins Retigger:
+          <select name="free_spins_retigger">
+            <option value="false" selected>No</option>
+            <option value="true">Yes</option>
+          </select>
+        </label>
+        <label>Number of Free Spins:
+          <input type="number" name="num_free_spin" />
+        </label>
+        <label>Multiplier:
+          <input type="number" name="multiplier" step="0.1" />
+        </label>
+      </div>
+
+      <label>Wild:
+        <select name="wild" id="wildSelect">
+          <option value="false" selected>No</option>
+          <option value="true">Yes</option>
+        </select>
+      </label>
+
+      <div id="wildOptions" style="display:none;">
+        <label>Jackpot:
+          <input type="number" name="jackpot" />
+        </label>
+      </div>
+
+      <label>RTP:
+        <input type="number" name="rtp" step="0.1" required />
+      </label>
+      <label>RTP Range:
+        <input type="number" name="rtp_range" step="0.1" required />
+      </label>
+
+      <button type="submit">Analyze</button>
+    </form>
   </div>
 
-  <!-- ✅ Output -->
+  <!-- ✅ The Output -->
   <div class="output-box" id="outputBox"></div>
 
   <script>
+    const scatterSelect = document.getElementById('scatterSelect');
+    const wildSelect = document.getElementById('wildSelect');
+    const scatterOptions = document.getElementById('scatterOptions');
+    const wildOptions = document.getElementById('wildOptions');
+
+    scatterSelect.addEventListener('change', () => {
+      scatterOptions.style.display = scatterSelect.value === 'true' ? 'block' : 'none';
+    });
+
+    wildSelect.addEventListener('change', () => {
+      wildOptions.style.display = wildSelect.value === 'true' ? 'block' : 'none';
+    });
+
     const outputBox = document.getElementById('outputBox');
-    const sendLabel = document.getElementById('sendLabel');
-    const messageInput = document.getElementById('messageInput');
 
-    sendLabel.addEventListener('click', function() {
+    document.getElementById('slotForm').addEventListener('submit', function(e) {
+      e.preventDefault();
       outputBox.innerHTML = '';
+      const formData = new FormData(this);
+      const data = {};
 
-      const data = { message: messageInput.value }; // 🔥 sends what you typed
+      for (const [key, value] of formData.entries()) {
+        if (value === 'true') data[key] = true;
+        else if (value === 'false') data[key] = false;
+        else if (!isNaN(value)) data[key] = Number(value);
+        else data[key] = value;
+      }
 
       const appendLine = (text) => {
         const line = document.createElement('div');
         line.className = 'output-line';
         line.textContent = text;
+
+  
+        let fontSize = 18;
+        line.style.fontSize = fontSize + 'px';
         outputBox.appendChild(line);
+
+        while (line.scrollWidth > outputBox.clientWidth && fontSize > 10) {
+          fontSize--;
+          line.style.fontSize = fontSize + 'px';
+        }
+
         outputBox.scrollTop = outputBox.scrollHeight;
       };
 
-      appendLine("🚀 Sending message...\n");
+      appendLine("🚀 Running analysis...\n");
 
-      fetch("https://8bc048f806eb.ngrok-free.app/receive", {
+      fetch("https://065a200e5b83.ngrok-free.app/receive", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -127,7 +218,7 @@ h1 {
         const readChunk = () => {
           reader.read().then(({ done, value }) => {
             if (done) {
-              appendLine("✅ Done.");
+              appendLine("✅ Analysis finished.");
               return;
             }
             const text = decoder.decode(value);
