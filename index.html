@@ -3,125 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Slot Math Engine | Professional Edition</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <title>Slot Math Studio | AI Architect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --primary: #2563eb; /* Professional Blue */
-      --primary-hover: #1d4ed8;
-      --bg-color: #f3f4f6;
-      --card-bg: #ffffff;
-      --text-main: #1f2937;
-      --text-secondary: #6b7280;
-      --border: #e5e7eb;
-      --success: #10b981;
+      /* Dark Mode Professional Palette */
+      --bg-body: #0f172a;      /* Deep Slate */
+      --bg-card: #1e293b;      /* Lighter Slate */
+      --bg-input: #334155;     /* Input Background */
+      --primary: #10b981;      /* Emerald Green */
+      --primary-hover: #059669;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #475569;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      padding: 0;
+      padding: 2rem 1rem;
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg-color);
+      background-color: var(--bg-body);
       color: var(--text-main);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
-    /* Header */
+    /* --- Header --- */
     header {
-      width: 100%;
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 1.5rem 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      margin-bottom: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
     }
-    
     header h1 {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-weight: 700;
+      font-size: 2rem;
+      margin: 0;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header p {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
     }
 
-    /* Main Layout */
+    /* --- Containers --- */
     .main-container {
-      max-width: 1000px;
       width: 100%;
-      padding: 0 1rem 2rem 1rem;
-      display: grid;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
       gap: 2rem;
     }
 
-    /* Card Styling */
     .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      padding: 2rem;
+      background: var(--bg-card);
       border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
 
     .card h2 {
       margin-top: 0;
-      font-size: 1.25rem;
-      color: var(--text-main);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
       border-bottom: 1px solid var(--border);
       padding-bottom: 1rem;
-      margin-bottom: 1.5rem;
     }
 
-    /* Grid for Inputs */
+    /* --- Forms --- */
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.5rem;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
+    .form-group { display: flex; flex-direction: column; }
 
     label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-secondary);
+      font-size: 0.85rem;
+      color: var(--text-muted);
       margin-bottom: 0.5rem;
+      font-weight: 500;
     }
 
     input, select {
-      padding: 0.75rem;
+      background: var(--bg-input);
       border: 1px solid var(--border);
+      color: white;
+      padding: 0.75rem;
       border-radius: 6px;
       font-size: 1rem;
-      font-family: inherit;
-      transition: border-color 0.2s;
+      outline: none;
+      transition: all 0.2s ease;
     }
 
     input:focus, select:focus {
-      outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     }
 
-    /* Section Visibility toggles */
-    .hidden {
-      display: none;
-    }
-
-    /* Paytable Grid Styling */
+    /* --- Paytable --- */
     .paytable-wrapper {
       overflow-x: auto;
-      margin-top: 1rem;
+      background: var(--bg-body);
+      border-radius: 8px;
+      border: 1px solid var(--border);
     }
 
     table.paytable {
@@ -131,82 +130,168 @@
     }
 
     table.paytable th, table.paytable td {
-      border: 1px solid var(--border);
-      padding: 0.75rem;
+      padding: 1rem;
       text-align: center;
+      border-bottom: 1px solid var(--border);
     }
 
     table.paytable th {
-      background-color: #f9fafb;
+      background: #0f172a;
+      color: var(--text-muted);
       font-weight: 600;
-      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.75rem;
     }
 
-    table.paytable td input {
-      width: 60px;
-      padding: 0.4rem;
+    table.paytable td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--primary);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      left: 0;
+      background: var(--bg-body);
+    }
+
+    table.paytable input {
+      width: 70px;
+      text-align: center;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+    table.paytable input:hover, table.paytable input:focus {
+      background: var(--bg-input);
+      border-color: var(--border);
+    }
+
+    /* --- Dynamic Options --- */
+    .options-panel {
+      background: rgba(16, 185, 129, 0.05); /* Subtle Green Tint */
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* --- Progress Bar --- */
+    #progressSection {
+      display: none; /* Hidden by default */
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .progress-container {
+      width: 100%;
+      height: 12px;
+      background-color: var(--bg-input);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary) 0%, #34d399 100%);
+      border-radius: 6px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    .status-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* --- Action Area --- */
+    .action-area {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: #000; /* Black text on green for contrast */
+      font-weight: 700;
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: transform 0.1s, filter 0.2s;
+      width: 100%;
       text-align: center;
     }
 
-    table.paytable .row-label {
-      background-color: #f9fafb;
-      font-weight: 600;
-      text-align: left;
+    .btn-main:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
     }
 
-    /* Action Button */
-    .btn-submit {
-      background-color: var(--primary);
+    .btn-main:disabled {
+      background: var(--border);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #resultLinks {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .btn-secondary {
+      background: var(--bg-input);
       color: white;
-      font-weight: 600;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      width: 100%;
-      transition: background 0.2s;
-      margin-top: 2rem;
-    }
-
-    .btn-submit:hover {
-      background-color: var(--primary-hover);
-    }
-
-    /* Output Console */
-    .console-output {
-      background-color: #111827;
-      color: #10b981;
-      font-family: 'Courier New', monospace;
-      padding: 1.5rem;
+      text-decoration: none;
+      padding: 1rem;
       border-radius: 8px;
-      min-height: 200px;
-      max-height: 500px;
-      overflow-y: auto;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      white-space: pre-wrap;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    .hidden { display: none; }
+
   </style>
 </head>
 <body>
 
   <header>
-    <h1>
-      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-      Slot Machine Math Analyzer
-    </h1>
+    <h1>SLOT MATH STUDIO</h1>
+    <p>AI-Powered Math Model Generator & Simulation Engine</p>
   </header>
 
   <div class="main-container">
     
     <div class="card">
-      <h2>1. Base Configuration</h2>
+      <h2>1. Engine Configuration</h2>
       <form id="configForm">
         <div class="form-grid">
           <div class="form-group">
-            <label>Total Number of Symbols</label>
-            <input type="number" id="totalSymbols" name="total_num_symbols" value="4" min="1" required />
+            <label>Total Symbols</label>
+            <input type="number" id="totalSymbols" name="total_num_symbols" value="8" min="1" required />
           </div>
           <div class="form-group">
             <label>Grid Rows</label>
@@ -216,9 +301,17 @@
             <label>Grid Columns (Reels)</label>
             <input type="number" id="gridCols" name="columns" value="5" min="1" required />
           </div>
+          <div class="form-group">
+            <label>Min Match to Win</label>
+            <input type="number" name="min_win" value="3" required />
+          </div>
+          <div class="form-group">
+            <label>RTP (%)</label>
+            <input type="number" name="rtp" value="96.5" step="0.1" required />
+          </div>
         </div>
 
-        <div class="form-grid" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+        <div class="form-grid" style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
           <div class="form-group">
             <label>Include Wild?</label>
             <select id="wildSelect" name="wild">
@@ -235,26 +328,26 @@
           </div>
         </div>
 
-        <div id="scatterOptions" class="hidden" style="margin-top: 1.5rem; background: #f0f9ff; padding: 1rem; border-radius: 6px; border: 1px solid #bae6fd;">
-          <label style="color:#0369a1; margin-bottom:1rem; display:block;">Scatter Logic Configuration</label>
+        <div id="scatterOptions" class="hidden options-panel">
+          <h3 style="margin:0 0 1rem 0; font-size:0.9rem; color:var(--primary);">SCATTER FEATURE LOGIC</h3>
           <div class="form-grid">
             <div class="form-group">
-              <label>Scatters to Trigger Free Spins</label>
+              <label>Triggers at (Count)</label>
               <input type="number" name="min_scatter_trigger" value="3" />
             </div>
             <div class="form-group">
-              <label>Number of Free Spins</label>
+              <label>Free Spins Awarded</label>
               <input type="number" name="num_free_spin" value="10" />
             </div>
             <div class="form-group">
-              <label>Free Spin Retrigger Allowed?</label>
+              <label>Retrigger Allowed</label>
               <select name="free_spin_retrigger">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Multiplier</label>
+              <label>Feature Multiplier</label>
               <input type="number" name="multiplier" step="0.1" value="1.0" />
             </div>
           </div>
@@ -263,117 +356,121 @@
     </div>
 
     <div class="card">
-      <h2>2. Paytable Inspector</h2>
-      <p style="font-size:0.9rem; color:var(--text-secondary);">Values represent the multiplier (e.g., 10x, 50x) for matching symbols per column.</p>
+      <h2>2. Dynamic Paytable</h2>
       <div class="paytable-wrapper" id="paytableContainer">
         </div>
     </div>
 
-    <button type="button" class="btn-submit" id="analyzeBtn">Analyze Mathematics</button>
+    <div class="card" style="text-align: center;">
+      <h2>3. Computation</h2>
+      
+      <button id="analyzeBtn" class="btn-main">Initialize Simulation</button>
 
-    <div class="card" style="background: #000; border: none;">
-      <h2 style="color: white; border-color: #333;">Server Output</h2>
-      <div class="console-output" id="outputBox">Waiting for analysis...</div>
+      <div id="progressSection">
+        <div class="status-text" id="statusMessage">Connecting to Neural Engine...</div>
+        <div class="progress-container">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Do not close this window while processing.</p>
+      </div>
+
+      <div id="resultLinks">
+        <a id="playLink" href="#" target="_blank" class="btn-secondary" style="border-color: var(--primary); color: var(--primary);">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Play Prototype
+        </a>
+        <a id="downloadLink" href="#" download class="btn-secondary">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Download Assets
+        </a>
+      </div>
     </div>
 
   </div>
 
   <script>
+    // --- CONFIGURATION ---
+    const SERVER_URL = "https://hamster-teaching-serval.ngrok-free.app";
+    const SESSION_ID = "session_" + Math.floor(Math.random() * 1000000);
+
     // --- DOM ELEMENTS ---
+    const configForm = document.getElementById('configForm');
     const totalSymbolsInput = document.getElementById('totalSymbols');
     const gridColsInput = document.getElementById('gridCols');
     const wildSelect = document.getElementById('wildSelect');
     const scatterSelect = document.getElementById('scatterSelect');
     const scatterOptions = document.getElementById('scatterOptions');
     const paytableContainer = document.getElementById('paytableContainer');
+    
     const analyzeBtn = document.getElementById('analyzeBtn');
-    const outputBox = document.getElementById('outputBox');
-    const configForm = document.getElementById('configForm');
+    const progressSection = document.getElementById('progressSection');
+    const progressFill = document.getElementById('progressFill');
+    const statusMessage = document.getElementById('statusMessage');
+    const resultLinks = document.getElementById('resultLinks');
+    const playLink = document.getElementById('playLink');
+    const downloadLink = document.getElementById('downloadLink');
 
-    // --- EVENTS FOR DYNAMIC UI ---
+    // --- DYNAMIC UI LOGIC ---
 
-    // 1. Toggle Scatter Options
-    scatterSelect.addEventListener('change', () => {
-      const isScatter = scatterSelect.value === 'true';
-      scatterOptions.style.display = isScatter ? 'block' : 'none';
-      generatePaytable(); // Regenerate table because rows change
-    });
+    function toggleOptions() {
+      scatterOptions.style.display = scatterSelect.value === 'true' ? 'block' : 'none';
+      generatePaytable();
+    }
 
-    // 2. Toggle Wild
-    wildSelect.addEventListener('change', () => {
-      generatePaytable(); // Regenerate table because rows change
-    });
-
-    // 3. Update Paytable when numbers change
+    scatterSelect.addEventListener('change', toggleOptions);
+    wildSelect.addEventListener('change', generatePaytable);
     totalSymbolsInput.addEventListener('input', generatePaytable);
     gridColsInput.addEventListener('input', generatePaytable);
 
-    // --- CORE LOGIC: GENERATE PAYTABLE ---
     function generatePaytable() {
       const numSymbols = parseInt(totalSymbolsInput.value) || 0;
       const numCols = parseInt(gridColsInput.value) || 0;
       const hasWild = wildSelect.value === 'true';
       const hasScatter = scatterSelect.value === 'true';
 
-      if (numSymbols <= 0 || numCols <= 0) {
-        paytableContainer.innerHTML = '<div style="padding:1rem; text-align:center; color:red;">Please enter valid Total Symbols and Columns.</div>';
-        return;
-      }
+      if (numSymbols <= 0 || numCols <= 0) return;
 
       let html = '<table class="paytable"><thead><tr>';
-      html += '<th>Symbol Name</th>';
-      
-      // Create Headers (1x, 2x... or Match 1, Match 2...)
-      // User requested: "column will represent the pay, first column 1x, 2x..."
-      for(let c=1; c<=numCols; c++) {
-        html += `<th>Match ${c}</th>`;
-      }
+      html += '<th>Symbol</th>';
+      for(let c=1; c<=numCols; c++) html += `<th>${c}x</th>`;
       html += '</tr></thead><tbody>';
 
-      // Helper to create a row
-      const createRow = (label, idPrefix) => {
-        let rowHtml = `<tr><td class="row-label">${label}</td>`;
+      const createRow = (label) => {
+        let r = `<tr><td>${label}</td>`;
         for(let c=0; c<numCols; c++) {
-          // Default value 0
-          rowHtml += `<td><input type="number" step="0.5" class="pay-input" data-row="${label}" data-col="${c}" value="0"></td>`;
+          r += `<td><input type="number" step="0.5" class="pay-input" data-row="${label}" value="0"></td>`;
         }
-        rowHtml += '</tr>';
-        return rowHtml;
+        return r + '</tr>';
       };
 
-      // 1. Regular Symbols
-      for(let i=1; i<=numSymbols; i++) {
-        html += createRow(`Symbol ${i}`);
-      }
-
-      // 2. Wild
-      if(hasWild) {
-        html += createRow('Wild');
-      }
-
-      // 3. Scatter
-      if(hasScatter) {
-        html += createRow('Scatter');
-      }
+      for(let i=1; i<=numSymbols; i++) html += createRow(`Sym ${i}`);
+      if(hasWild) html += createRow('WILD');
+      if(hasScatter) html += createRow('SCATTER');
 
       html += '</tbody></table>';
       paytableContainer.innerHTML = html;
     }
 
-    // Initial Generation on Load
+    // Initial Draw
     generatePaytable();
 
+    // --- NETWORK LOGIC ---
 
-    // --- SUBMISSION LOGIC ---
-    analyzeBtn.addEventListener('click', () => {
-      outputBox.innerHTML = ''; // Clear console
-      appendLog("🚀 Preparing Analysis Data...");
+    analyzeBtn.addEventListener('click', startAnalysis);
 
-      // 1. Gather Basic Form Data
+    function startAnalysis() {
+      // 1. UI State Change
+      analyzeBtn.disabled = true;
+      analyzeBtn.innerText = "Processing...";
+      progressSection.style.display = "block";
+      resultLinks.style.display = "none";
+      progressFill.style.width = "5%";
+
+      // 2. Collect Data
       const formData = new FormData(configForm);
-      const data = {};
+      const data = { session_id: SESSION_ID };
 
-      // Convert FormData to JSON object, handling Types
+      // Parse Form
       for (const [key, value] of formData.entries()) {
         if (value === 'true') data[key] = true;
         else if (value === 'false') data[key] = false;
@@ -381,62 +478,90 @@
         else data[key] = value;
       }
 
-      // 2. Gather Paytable Data into an Array
-      // We need to scan the generated table inputs
+      // Parse Paytable
       const payInputs = document.querySelectorAll('.pay-input');
-      const paytableMap = {}; // Temporary map to organize by row
-      
+      const paytableMap = {};
       payInputs.forEach(input => {
-        const rowName = input.dataset.row; // "Symbol 1", "Wild", etc.
-        const val = Number(input.value);
-        
-        if(!paytableMap[rowName]) paytableMap[rowName] = [];
-        paytableMap[rowName].push(val);
+        const r = input.dataset.row;
+        if(!paytableMap[r]) paytableMap[r] = [];
+        paytableMap[r].push(Number(input.value));
       });
-
-      // Convert Map values to Array
-      // The order will be Symbol 1...N, Wild, Scatter based on insertion order
       data['paytable'] = Object.values(paytableMap);
 
-      appendLog(`📦 Payload constructed. Rows: ${data.paytable.length}, Cols: ${data.columns}`);
-      appendLog(`📡 Sending to Server...`);
-
-      // 3. Fetch Request
-      // Note: Using the ngrok URL provided in previous prompt
-      fetch("https://8d9a36a41637.ngrok-free.app/receive", {
+      // 3. Send Initial Request
+      // Note: Sending to /receive to initiate, then we poll
+      fetch(`${SERVER_URL}/receive`, { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
-      }).then(res => {
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-
-        const readChunk = () => {
-          reader.read().then(({ done, value }) => {
-            if (done) {
-              appendLog("✅ Analysis finished.");
-              return;
-            }
-            const text = decoder.decode(value);
-            const lines = text.split('\n');
-            for (const line of lines) {
-              if (line.trim() !== '') appendLog(line);
-            }
-            readChunk();
-          });
-        };
-        readChunk();
-      }).catch(err => {
-        appendLog("❌ Error: " + err.message);
+      })
+      .then(res => {
+        if(res.ok) {
+          statusMessage.innerText = "Data received. Calculations started...";
+          // Start Polling
+          startPolling();
+        } else {
+          throw new Error("Server rejected connection");
+        }
+      })
+      .catch(err => {
+        statusMessage.innerText = "Error: " + err.message;
+        statusMessage.style.color = "#ef4444";
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerText = "Retry";
       });
-    });
+    }
 
-    // Helper for console output
-    function appendLog(text) {
-      const line = document.createElement('div');
-      line.textContent = `> ${text}`;
-      outputBox.appendChild(line);
-      outputBox.scrollTop = outputBox.scrollHeight;
+    function startPolling() {
+      const interval = setInterval(() => {
+        fetch(`${SERVER_URL}/get_status`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ session_id: SESSION_ID })
+        })
+        .then(res => res.json())
+        .then(data => {
+          const percent = data.process_percent;
+          
+          // Update Bar
+          progressFill.style.width = percent + "%";
+          
+          // Update Text based on percentage for realism
+          if(percent < 30) statusMessage.innerText = "Simulating Spins...";
+          else if(percent < 70) statusMessage.innerText = "Calculating Variance & Volatility...";
+          else if(percent < 90) statusMessage.innerText = "Optimizing JSON Assets...";
+          else statusMessage.innerText = "Finalizing...";
+
+          // Completion Check
+          if (percent >= 100) {
+            clearInterval(interval);
+            handleCompletion(data);
+          }
+        })
+        .catch(err => {
+          console.error("Polling Error", err);
+          // Don't stop polling immediately on one error, network might glitch
+        });
+      }, 1000);
+    }
+
+    function handleCompletion(data) {
+      progressFill.style.width = "100%";
+      statusMessage.innerText = "Analysis Complete!";
+      statusMessage.style.color = var(--primary);
+      
+      // Hide Progress, Show Buttons
+      setTimeout(() => {
+        progressSection.style.display = "none";
+        analyzeBtn.style.display = "none"; // Remove initial button
+        
+        // Set Links
+        playLink.href = `${SERVER_URL}${data.game_link}`;
+        downloadLink.href = `${SERVER_URL}${data.download_link}`;
+        
+        // Reveal
+        resultLinks.style.display = "grid";
+      }, 800);
     }
 
   </script>
