@@ -3,30 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Slot Math Studio | AI Architect</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <title>Slot Math Architect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      /* Dark Mode Professional Palette */
-      --bg-body: #0f172a;      /* Deep Slate */
-      --bg-card: #1e293b;      /* Lighter Slate */
-      --bg-input: #334155;     /* Input Background */
-      --primary: #10b981;      /* Emerald Green */
-      --primary-hover: #059669;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #475569;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      --bg-dark: #111827;
+      --bg-card: #1f2937;
+      --accent: #10b981; /* Matrix Green */
+      --accent-hover: #059669;
+      --text-main: #ffffff;
+      --text-sub: #9ca3af;
+      --border: #374151;
+      --input-bg: #111827;
     }
-
-    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      padding: 2rem 1rem;
+      padding: 2rem;
+      background-color: var(--bg-dark);
       font-family: 'Inter', sans-serif;
-      background-color: var(--bg-body);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
@@ -34,292 +30,238 @@
       min-height: 100vh;
     }
 
-    /* --- Header --- */
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    header h1 {
-      font-weight: 700;
-      font-size: 2rem;
-      margin: 0;
-      background: linear-gradient(to right, #fff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    header p {
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
+    h1 {
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 10px;
     }
 
-    /* --- Containers --- */
-    .main-container {
+    .container {
+      max-width: 1100px;
       width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 2rem;
     }
 
+    /* CARD STYLING */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .card h2 {
-      margin-top: 0;
+    .card-header {
       font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--primary);
+      font-weight: 600;
+      color: var(--accent);
       margin-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    /* --- Forms --- */
-    .form-grid {
+    /* INPUT GRIDS */
+    .grid-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    .form-group { display: flex; flex-direction: column; }
-
     label {
+      display: block;
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-sub);
       margin-bottom: 0.5rem;
-      font-weight: 500;
     }
 
     input, select {
-      background: var(--bg-input);
+      width: 100%;
+      background: var(--input-bg);
       border: 1px solid var(--border);
       color: white;
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-size: 1rem;
-      outline: none;
-      transition: all 0.2s ease;
+      padding: 0.8rem;
+      border-radius: 4px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.9rem;
+      box-sizing: border-box; 
     }
 
     input:focus, select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      outline: none;
+      border-color: var(--accent);
     }
 
-    /* --- Paytable --- */
-    .paytable-wrapper {
-      overflow-x: auto;
-      background: var(--bg-body);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    table.paytable {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    table.paytable th, table.paytable td {
-      padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    table.paytable th {
-      background: #0f172a;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-    }
-
-    table.paytable td:first-child {
-      text-align: left;
-      font-weight: 600;
-      color: var(--primary);
-      border-right: 1px solid var(--border);
-      position: sticky;
-      left: 0;
-      background: var(--bg-body);
-    }
-
-    table.paytable input {
-      width: 70px;
-      text-align: center;
-      background: transparent;
-      border: 1px solid transparent;
-    }
-    table.paytable input:hover, table.paytable input:focus {
-      background: var(--bg-input);
-      border-color: var(--border);
-    }
-
-    /* --- Dynamic Options --- */
-    .options-panel {
-      background: rgba(16, 185, 129, 0.05); /* Subtle Green Tint */
-      border: 1px solid rgba(16, 185, 129, 0.2);
-      border-radius: 8px;
+    /* SCATTER SETTINGS PANEL */
+    #scatterSettings {
+      display: none;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--accent);
       padding: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    /* --- Progress Bar --- */
-    #progressSection {
-      display: none; /* Hidden by default */
-      text-align: center;
+      border-radius: 6px;
       margin-top: 1rem;
     }
-    
-    .progress-container {
-      width: 100%;
-      height: 12px;
-      background-color: var(--bg-input);
-      border-radius: 6px;
-      overflow: hidden;
-      margin: 1rem 0;
-      position: relative;
+
+    /* PAYTABLE TABLE */
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
     }
 
-    .progress-fill {
-      height: 100%;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    th {
+      background: #111827;
+      color: var(--accent);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    td:first-child {
+      text-align: left;
+      font-weight: bold;
+      background: #273548;
+      position: sticky;
+      left: 0;
+    }
+
+    td input {
+      width: 80px;
+      text-align: center;
+      border: 1px solid #4b5563;
+    }
+
+    /* BUTTONS */
+    .btn-analyze {
+      width: 100%;
+      padding: 1rem;
+      background: var(--accent);
+      color: #000;
+      font-weight: 800;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      transition: 0.2s;
+      margin-top: 1rem;
+    }
+
+    .btn-analyze:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-analyze:disabled {
+      background: var(--border);
+      color: var(--text-sub);
+      cursor: not-allowed;
+    }
+
+    /* PROGRESS BAR */
+    .progress-container {
+      display: none;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 20px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
       width: 0%;
-      background: var(--primary);
-      background: linear-gradient(90deg, var(--primary) 0%, #34d399 100%);
-      border-radius: 6px;
-      transition: width 0.5s ease;
-      box-shadow: 0 0 10px var(--primary);
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #34d399);
+      transition: width 0.3s ease;
     }
 
     .status-text {
+      color: var(--accent);
+      font-family: 'Roboto Mono', monospace;
       font-size: 0.9rem;
-      color: var(--text-muted);
-      animation: pulse 1.5s infinite;
     }
 
-    /* --- Action Area --- */
-    .action-area {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .btn-main {
-      background: var(--primary);
-      color: #000; /* Black text on green for contrast */
-      font-weight: 700;
-      padding: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: transform 0.1s, filter 0.2s;
-      width: 100%;
-      text-align: center;
-    }
-
-    .btn-main:hover {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
-
-    .btn-main:disabled {
-      background: var(--border);
-      color: var(--text-muted);
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    #resultLinks {
+    /* RESULT LINKS */
+    .result-actions {
       display: none;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
+      margin-top: 2rem;
     }
 
-    .btn-secondary {
-      background: var(--bg-input);
+    .btn-link {
+      display: block;
+      padding: 1rem;
+      text-align: center;
+      background: #374151;
       color: white;
       text-decoration: none;
-      padding: 1rem;
-      border-radius: 8px;
-      text-align: center;
+      border-radius: 4px;
       font-weight: 600;
       border: 1px solid var(--border);
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
     }
-
-    .btn-secondary:hover {
-      background: #475569;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-
-    .hidden { display: none; }
+    .btn-link:hover { background: #4b5563; }
+    .btn-play { border-color: var(--accent); color: var(--accent); }
 
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>SLOT MATH STUDIO</h1>
-    <p>AI-Powered Math Model Generator & Simulation Engine</p>
-  </header>
+  <h1>Slot Math Architect</h1>
 
-  <div class="main-container">
-    
+  <div class="container">
+
     <div class="card">
-      <h2>1. Engine Configuration</h2>
-      <form id="configForm">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Total Symbols</label>
-            <input type="number" id="totalSymbols" name="total_num_symbols" value="8" min="1" required />
+      <div class="card-header">1. GRID & SYMBOL CONFIGURATION</div>
+      <form id="mainForm">
+        <div class="grid-row">
+          <div>
+            <label>Total Number of Symbols</label>
+            <input type="number" id="totalSymbols" name="total_num_symbols" value="5" min="1">
           </div>
-          <div class="form-group">
-            <label>Grid Rows</label>
-            <input type="number" name="rows" value="3" required />
+          <div>
+            <label>Number of Rows</label>
+            <input type="number" name="rows" value="3">
           </div>
-          <div class="form-group">
-            <label>Grid Columns (Reels)</label>
-            <input type="number" id="gridCols" name="columns" value="5" min="1" required />
-          </div>
-          <div class="form-group">
-            <label>Min Match to Win</label>
-            <input type="number" name="min_win" value="3" required />
-          </div>
-          <div class="form-group">
-            <label>RTP (%)</label>
-            <input type="number" name="rtp" value="96.5" step="0.1" required />
+          <div>
+            <label>Number of Columns (Reels)</label>
+            <input type="number" id="numCols" name="columns" value="5" min="1">
           </div>
         </div>
 
-        <div class="form-grid" style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
-          <div class="form-group">
+        <div class="grid-row">
+          <div>
             <label>Include Wild?</label>
             <select id="wildSelect" name="wild">
               <option value="false">No</option>
               <option value="true">Yes</option>
             </select>
           </div>
-          <div class="form-group">
+          <div>
             <label>Include Scatter?</label>
             <select id="scatterSelect" name="scatter">
               <option value="false">No</option>
@@ -328,27 +270,26 @@
           </div>
         </div>
 
-        <div id="scatterOptions" class="hidden options-panel">
-          <h3 style="margin:0 0 1rem 0; font-size:0.9rem; color:var(--primary);">SCATTER FEATURE LOGIC</h3>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Triggers at (Count)</label>
-              <input type="number" name="min_scatter_trigger" value="3" />
+        <div id="scatterSettings">
+          <div class="grid-row" style="margin-bottom:0;">
+            <div>
+              <label>Min Scatter to Trigger</label>
+              <input type="number" name="min_scatter_trigger" value="3">
             </div>
-            <div class="form-group">
-              <label>Free Spins Awarded</label>
-              <input type="number" name="num_free_spin" value="10" />
+            <div>
+              <label>Free Spins Reward</label>
+              <input type="number" name="num_free_spin" value="10">
             </div>
-            <div class="form-group">
-              <label>Retrigger Allowed</label>
+            <div>
+              <label>Free Spin Retrigger?</label>
               <select name="free_spin_retrigger">
                 <option value="false">No</option>
                 <option value="true">Yes</option>
               </select>
             </div>
-            <div class="form-group">
+            <div>
               <label>Feature Multiplier</label>
-              <input type="number" name="multiplier" step="0.1" value="1.0" />
+              <input type="number" name="multiplier" step="0.1" value="1.0">
             </div>
           </div>
         </div>
@@ -356,214 +297,200 @@
     </div>
 
     <div class="card">
-      <h2>2. Dynamic Paytable</h2>
-      <div class="paytable-wrapper" id="paytableContainer">
+      <div class="card-header">2. PAYTABLE INSPECTOR (PAYOUTS)</div>
+      <div class="table-wrapper" id="paytableContainer">
         </div>
     </div>
 
-    <div class="card" style="text-align: center;">
-      <h2>3. Computation</h2>
-      
-      <button id="analyzeBtn" class="btn-main">Initialize Simulation</button>
+    <div class="card">
+      <button id="analyzeBtn" class="btn-analyze">ANALYZE MATHEMATICS</button>
 
-      <div id="progressSection">
-        <div class="status-text" id="statusMessage">Connecting to Neural Engine...</div>
-        <div class="progress-container">
-          <div class="progress-fill" id="progressFill"></div>
+      <div id="progressContainer" class="progress-container">
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
         </div>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Do not close this window while processing.</p>
+        <div id="statusText" class="status-text">CONNECTING TO SERVER...</div>
       </div>
 
-      <div id="resultLinks">
-        <a id="playLink" href="#" target="_blank" class="btn-secondary" style="border-color: var(--primary); color: var(--primary);">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          Play Prototype
-        </a>
-        <a id="downloadLink" href="#" download class="btn-secondary">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          Download Assets
-        </a>
+      <div id="resultActions" class="result-actions">
+        <a href="#" id="playLink" target="_blank" class="btn-link btn-play">▶ PLAY DEMO</a>
+        <a href="#" id="dlLink" download class="btn-link">⬇ DOWNLOAD JSON</a>
       </div>
     </div>
 
   </div>
 
   <script>
-    // --- CONFIGURATION ---
     const SERVER_URL = "https://hamster-teaching-serval.ngrok-free.app";
-    const SESSION_ID = "session_" + Math.floor(Math.random() * 1000000);
+    const SESSION_ID = "user_" + Math.floor(Math.random() * 9999999);
 
-    // --- DOM ELEMENTS ---
-    const configForm = document.getElementById('configForm');
+    // Elements
     const totalSymbolsInput = document.getElementById('totalSymbols');
-    const gridColsInput = document.getElementById('gridCols');
+    const numColsInput = document.getElementById('numCols');
     const wildSelect = document.getElementById('wildSelect');
     const scatterSelect = document.getElementById('scatterSelect');
-    const scatterOptions = document.getElementById('scatterOptions');
+    const scatterSettings = document.getElementById('scatterSettings');
     const paytableContainer = document.getElementById('paytableContainer');
+    const mainForm = document.getElementById('mainForm');
     
     const analyzeBtn = document.getElementById('analyzeBtn');
-    const progressSection = document.getElementById('progressSection');
-    const progressFill = document.getElementById('progressFill');
-    const statusMessage = document.getElementById('statusMessage');
-    const resultLinks = document.getElementById('resultLinks');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const statusText = document.getElementById('statusText');
+    const resultActions = document.getElementById('resultActions');
     const playLink = document.getElementById('playLink');
-    const downloadLink = document.getElementById('downloadLink');
+    const dlLink = document.getElementById('dlLink');
 
-    // --- DYNAMIC UI LOGIC ---
+    // --- 1. DYNAMIC UI LOGIC ---
 
-    function toggleOptions() {
-      scatterOptions.style.display = scatterSelect.value === 'true' ? 'block' : 'none';
-      generatePaytable();
-    }
+    // Toggle Scatter Panel
+    scatterSelect.addEventListener('change', () => {
+      if(scatterSelect.value === 'true') {
+        scatterSettings.style.display = 'block';
+      } else {
+        scatterSettings.style.display = 'none';
+      }
+      renderPaytable(); // Re-render table because rows changed
+    });
 
-    scatterSelect.addEventListener('change', toggleOptions);
-    wildSelect.addEventListener('change', generatePaytable);
-    totalSymbolsInput.addEventListener('input', generatePaytable);
-    gridColsInput.addEventListener('input', generatePaytable);
+    wildSelect.addEventListener('change', renderPaytable);
+    totalSymbolsInput.addEventListener('input', renderPaytable);
+    numColsInput.addEventListener('input', renderPaytable);
 
-    function generatePaytable() {
-      const numSymbols = parseInt(totalSymbolsInput.value) || 0;
-      const numCols = parseInt(gridColsInput.value) || 0;
+    function renderPaytable() {
+      const symbols = parseInt(totalSymbolsInput.value) || 0;
+      const cols = parseInt(numColsInput.value) || 0;
       const hasWild = wildSelect.value === 'true';
       const hasScatter = scatterSelect.value === 'true';
 
-      if (numSymbols <= 0 || numCols <= 0) return;
+      if (symbols < 1 || cols < 1) {
+        paytableContainer.innerHTML = '<div style="padding:1rem; text-align:center;">Enter valid config to see paytable</div>';
+        return;
+      }
 
-      let html = '<table class="paytable"><thead><tr>';
-      html += '<th>Symbol</th>';
-      for(let c=1; c<=numCols; c++) html += `<th>${c}x</th>`;
+      let html = '<table><thead><tr>';
+      html += '<th>SYMBOL NAME</th>';
+      
+      // Generate Headers (1x, 2x... Nx)
+      for(let i=1; i<=cols; i++) {
+        html += `<th>${i}x COLUMN</th>`;
+      }
       html += '</tr></thead><tbody>';
 
-      const createRow = (label) => {
-        let r = `<tr><td>${label}</td>`;
-        for(let c=0; c<numCols; c++) {
-          r += `<td><input type="number" step="0.5" class="pay-input" data-row="${label}" value="0"></td>`;
+      // Helper for rows
+      const createRow = (name) => {
+        let row = `<tr><td>${name}</td>`;
+        for(let i=0; i<cols; i++) {
+          row += `<td><input type="number" step="0.1" class="pay-val" data-row="${name}" value="0"></td>`;
         }
-        return r + '</tr>';
+        row += '</tr>';
+        return row;
       };
 
-      for(let i=1; i<=numSymbols; i++) html += createRow(`Sym ${i}`);
+      // 1. Regular Symbols
+      for(let i=1; i<=symbols; i++) {
+        html += createRow(`Symbol_${i}`);
+      }
+
+      // 2. Wild
       if(hasWild) html += createRow('WILD');
+
+      // 3. Scatter
       if(hasScatter) html += createRow('SCATTER');
 
       html += '</tbody></table>';
       paytableContainer.innerHTML = html;
     }
 
-    // Initial Draw
-    generatePaytable();
+    // Initial render
+    renderPaytable();
 
-    // --- NETWORK LOGIC ---
 
-    analyzeBtn.addEventListener('click', startAnalysis);
+    // --- 2. SERVER COMMUNICATION LOGIC ---
 
-    function startAnalysis() {
-      // 1. UI State Change
+    analyzeBtn.addEventListener('click', () => {
+      // UI Reset
       analyzeBtn.disabled = true;
-      analyzeBtn.innerText = "Processing...";
-      progressSection.style.display = "block";
-      resultLinks.style.display = "none";
-      progressFill.style.width = "5%";
+      progressContainer.style.display = 'block';
+      resultActions.style.display = 'none';
+      progressBar.style.width = '0%';
+      statusText.textContent = "INITIALIZING DATA...";
 
-      // 2. Collect Data
-      const formData = new FormData(configForm);
-      const data = { session_id: SESSION_ID };
+      // Collect Form Data
+      const formData = new FormData(mainForm);
+      const payload = { session_id: SESSION_ID };
 
-      // Parse Form
       for (const [key, value] of formData.entries()) {
-        if (value === 'true') data[key] = true;
-        else if (value === 'false') data[key] = false;
-        else if (!isNaN(value) && value !== '') data[key] = Number(value);
-        else data[key] = value;
+        if(value === 'true') payload[key] = true;
+        else if(value === 'false') payload[key] = false;
+        else if(!isNaN(value) && value !== '') payload[key] = Number(value);
+        else payload[key] = value;
       }
 
-      // Parse Paytable
-      const payInputs = document.querySelectorAll('.pay-input');
-      const paytableMap = {};
-      payInputs.forEach(input => {
-        const r = input.dataset.row;
-        if(!paytableMap[r]) paytableMap[r] = [];
-        paytableMap[r].push(Number(input.value));
+      // Collect Paytable Data (Array of Arrays)
+      const inputs = document.querySelectorAll('.pay-val');
+      const map = {};
+      inputs.forEach(inp => {
+        const r = inp.dataset.row;
+        if(!map[r]) map[r] = [];
+        map[r].push(Number(inp.value));
       });
-      data['paytable'] = Object.values(paytableMap);
+      payload.paytable = Object.values(map);
 
-      // 3. Send Initial Request
-      // Note: Sending to /receive to initiate, then we poll
-      fetch(`${SERVER_URL}/receive`, { 
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+      // Send Initial Request
+      fetch(`${SERVER_URL}/receive`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       })
       .then(res => {
         if(res.ok) {
-          statusMessage.innerText = "Data received. Calculations started...";
           // Start Polling
           startPolling();
         } else {
-          throw new Error("Server rejected connection");
+          throw new Error("Server Error");
         }
       })
       .catch(err => {
-        statusMessage.innerText = "Error: " + err.message;
-        statusMessage.style.color = "#ef4444";
+        statusText.textContent = "ERROR: " + err.message;
+        statusText.style.color = 'red';
         analyzeBtn.disabled = false;
-        analyzeBtn.innerText = "Retry";
       });
-    }
+    });
 
     function startPolling() {
       const interval = setInterval(() => {
         fetch(`${SERVER_URL}/get_status`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ session_id: SESSION_ID })
         })
         .then(res => res.json())
         .then(data => {
           const percent = data.process_percent;
+          progressBar.style.width = percent + '%';
           
-          // Update Bar
-          progressFill.style.width = percent + "%";
-          
-          // Update Text based on percentage for realism
-          if(percent < 30) statusMessage.innerText = "Simulating Spins...";
-          else if(percent < 70) statusMessage.innerText = "Calculating Variance & Volatility...";
-          else if(percent < 90) statusMessage.innerText = "Optimizing JSON Assets...";
-          else statusMessage.innerText = "Finalizing...";
-
-          // Completion Check
-          if (percent >= 100) {
-            clearInterval(interval);
-            handleCompletion(data);
+          if(percent < 100) {
+             statusText.textContent = `PROCESSING... ${percent}%`;
+          } else {
+             // 100% Complete
+             clearInterval(interval);
+             statusText.textContent = "COMPLETE";
+             
+             playLink.href = SERVER_URL + data.game_link;
+             dlLink.href = SERVER_URL + data.download_link;
+             
+             // Hide progress, show buttons
+             setTimeout(() => {
+               progressContainer.style.display = 'none';
+               analyzeBtn.style.display = 'none'; // Remove analyze button
+               resultActions.style.display = 'grid';
+             }, 500);
           }
         })
-        .catch(err => {
-          console.error("Polling Error", err);
-          // Don't stop polling immediately on one error, network might glitch
-        });
-      }, 1000);
+        .catch(e => console.log(e));
+      }, 1000); // Check every 1 second
     }
-
-    function handleCompletion(data) {
-      progressFill.style.width = "100%";
-      statusMessage.innerText = "Analysis Complete!";
-      statusMessage.style.color = var(--primary);
-      
-      // Hide Progress, Show Buttons
-      setTimeout(() => {
-        progressSection.style.display = "none";
-        analyzeBtn.style.display = "none"; // Remove initial button
-        
-        // Set Links
-        playLink.href = `${SERVER_URL}${data.game_link}`;
-        downloadLink.href = `${SERVER_URL}${data.download_link}`;
-        
-        // Reveal
-        resultLinks.style.display = "grid";
-      }, 800);
-    }
-
   </script>
 </body>
 </html>
