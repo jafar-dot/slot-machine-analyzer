@@ -26,748 +26,398 @@
       --warning: #f59e0b;
       --warning-bg: rgba(245, 158, 11, 0.1);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg-dark);
-      background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-        radial-gradient(ellipse 60% 50% at 50% 120%, rgba(139, 92, 246, 0.1), transparent);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: var(--text-main);
-      overflow: hidden;
-      padding: 20px;
+      font-family: 'Inter', sans-serif; background: var(--bg-dark);
+      background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.15), transparent);
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; color: var(--text-main); overflow: hidden; padding: 20px;
     }
-
     #chatInner {
-      width: 100%;
-      max-width: 900px;
-      height: 92vh;
-      max-height: 900px;
-      background: var(--card-bg);
-      backdrop-filter: blur(24px);
-      border-radius: 24px;
-      border: 1px solid var(--card-border);
-      box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.7);
-      animation: fadeInScale 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
+      width: 100%; max-width: 900px; height: 92vh; max-height: 900px;
+      background: var(--card-bg); backdrop-filter: blur(24px); border-radius: 24px;
+      border: 1px solid var(--card-border); box-shadow: 0 20px 60px -15px rgba(0,0,0,0.7);
+      display: flex; flex-direction: column; overflow: hidden;
     }
-
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.96) translateY(20px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
     .header {
-      padding: 20px 36px;
-      border-bottom: 1px solid var(--card-border);
-      background: rgba(17, 17, 27, 0.6);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 20px 36px; border-bottom: 1px solid var(--card-border);
+      background: rgba(17,17,27,0.6); display: flex; justify-content: space-between; align-items: center;
     }
-
-    h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
+    h2 { font-size: 1.3rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 12px; }
     .ai-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: var(--primary-light);
-      border: 1px solid var(--primary);
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+      background: var(--primary-light); border: 1px solid var(--primary); border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; color: var(--primary); text-transform: uppercase;
     }
-
-    .ai-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse-badge 2s ease infinite;
-    }
-
     #gameActiveIndicator {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: var(--success-bg);
-      border: 1px solid var(--success);
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--success);
-      cursor: pointer;
-      transition: all 0.3s ease;
+      display: none; align-items: center; gap: 8px; padding: 6px 14px;
+      background: var(--success-bg); border: 1px solid var(--success); border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; color: var(--success); cursor: pointer;
     }
-
-    #gameActiveIndicator:hover { background: rgba(16, 185, 129, 0.2); }
     #gameActiveIndicator.active { display: flex; }
-
-    #gameActiveIndicator::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse-badge 2s ease infinite;
-    }
-
-    @keyframes pulse-badge {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(0.9); }
-    }
-
     #adjustmentModeBar {
-      display: none;
-      padding: 12px 36px;
-      background: var(--primary-light);
-      border-bottom: 1px solid var(--primary);
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      font-size: 0.9rem;
-      color: var(--text-main);
+      display: none; padding: 12px 36px; background: var(--primary-light);
+      border-bottom: 1px solid var(--primary); align-items: center; justify-content: center;
+      gap: 16px; font-size: 0.9rem;
     }
-
     #adjustmentModeBar.active { display: flex; }
-
-    .adjustment-type-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.85rem;
+    .type-label {
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px;
+      font-weight: 500; font-size: 0.8rem;
     }
-
-    .adjustment-type-label.analysis {
-      background: var(--analysis-light);
-      color: var(--analysis);
-    }
-
-    .adjustment-type-label.logic {
-      background: var(--logic-light);
-      color: var(--logic);
-    }
-
-    .adjustment-type-label::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-
+    .type-label.analysis { background: var(--analysis-light); color: var(--analysis); }
+    .type-label.logic { background: var(--logic-light); color: var(--logic); }
     #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      scroll-behavior: smooth;
+      flex: 1; overflow-y: auto; padding: 24px 36px; display: flex;
+      flex-direction: column; gap: 16px; scroll-behavior: smooth;
     }
-
-    #messages::-webkit-scrollbar { width: 8px; }
-    #messages::-webkit-scrollbar-track { background: transparent; }
-    #messages::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 4px; }
-
     .message {
-      max-width: 75%;
-      padding: 14px 20px;
-      border-radius: 16px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      word-wrap: break-word;
+      max-width: 75%; padding: 14px 20px; border-radius: 16px;
+      font-size: 0.95rem; line-height: 1.6; word-wrap: break-word;
+      animation: slideIn 0.3s ease;
     }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    @keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
     .user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-      color: white;
-      border-bottom-right-radius: 4px;
+      align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white; border-bottom-right-radius: 4px;
     }
-
     .bot {
-      align-self: flex-start;
-      background: rgba(39, 39, 52, 0.6);
-      color: var(--text-main);
-      border-bottom-left-radius: 4px;
-      border: 1px solid rgba(99, 102, 241, 0.1);
+      align-self: flex-start; background: rgba(39,39,52,0.6); color: var(--text-main);
+      border-bottom-left-radius: 4px; border: 1px solid rgba(99,102,241,0.1);
     }
-
-    .bot.adjustment-msg {
-      border-color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .input-area {
-      padding: 20px 36px 24px;
-      background: rgba(17, 17, 27, 0.8);
-      border-top: 1px solid var(--card-border);
-    }
-
+    .bot.highlight { border-color: var(--analysis); background: var(--analysis-light); }
+    .input-area { padding: 20px 36px 24px; background: rgba(17,17,27,0.8); border-top: 1px solid var(--card-border); }
     #waitMessage {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding: 12px 16px;
-      background: var(--primary-light);
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
+      display: none; align-items: center; gap: 10px; margin-bottom: 14px;
+      padding: 12px 16px; background: var(--primary-light); border-radius: 10px; border: 1px solid var(--card-border);
     }
-
     .pulse-dots { display: flex; gap: 4px; }
-    .pulse-dot {
-      width: 6px; height: 6px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation: pulse-dot 1.4s ease infinite;
-    }
-    .pulse-dot:nth-child(2) { animation-delay: 0.2s; }
-    .pulse-dot:nth-child(3) { animation-delay: 0.4s; }
+    .pulse-dot { width:6px; height:6px; background:var(--primary); border-radius:50%; animation: pd 1.4s ease infinite; }
+    .pulse-dot:nth-child(2) { animation-delay:0.2s; }
+    .pulse-dot:nth-child(3) { animation-delay:0.4s; }
+    @keyframes pd { 0%,80%,100%{opacity:0.3;transform:scale(0.8);} 40%{opacity:1;transform:scale(1.2);} }
 
-    @keyframes pulse-dot {
-      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-      40% { opacity: 1; transform: scale(1.2); }
-    }
+    /* Progress bars */
+    .progress-box { display: none; margin-bottom: 14px; }
+    .progress-header { display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:var(--text-muted); }
+    .progress-track { width:100%; height:6px; background:rgba(99,102,241,0.1); border-radius:10px; overflow:hidden; }
+    .progress-fill { height:100%; border-radius:10px; transition:width 0.3s ease; width:0%; }
+    #progressContainer .progress-fill { background: linear-gradient(90deg, var(--primary), var(--primary-hover)); }
+    #analysisProgress .progress-fill { background: linear-gradient(90deg, var(--analysis), var(--analysis-hover)); }
 
-    #progressContainer { display: none; margin-bottom: 14px; }
-    .progress-header {
-      display: flex; justify-content: space-between;
-      margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted);
-    }
-    .progress-bar {
-      width: 100%; height: 6px;
-      background: rgba(99, 102, 241, 0.1);
-      border-radius: 10px; overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
-      border-radius: 10px; transition: width 0.3s ease; width: 0%;
-    }
-
-    #links { display: none; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-
+    /* Links */
+    #links { display:none; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
     .link-button {
-      flex: 1;
-      padding: 10px 16px;
-      text-align: center;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: 1px solid;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 140px;
+      flex:1; padding:10px 16px; text-align:center; border-radius:10px; font-size:0.9rem;
+      font-weight:500; text-decoration:none; border:1px solid; display:inline-flex;
+      align-items:center; justify-content:center; gap:8px; min-width:130px; transition:all 0.2s;
     }
+    .link-button.play { background:var(--success-bg); color:var(--success); border-color:var(--success); }
+    .link-button.download { background:var(--primary-light); color:var(--primary); border-color:var(--primary); }
+    .link-button.dashboard { background:var(--analysis-light); color:var(--analysis); border-color:var(--analysis); display:none; }
+    .link-button.dashboard.show { display:inline-flex; }
+    #refreshLink { display:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:500;
+      text-decoration:none; border:1px solid var(--warning); background:var(--warning-bg); color:var(--warning); cursor:pointer; }
+    #refreshLink.show { display:inline-flex; }
 
-    .link-button.play {
-      background: var(--success-bg); color: var(--success); border-color: var(--success);
-    }
-    .link-button.play:hover { background: rgba(16, 185, 129, 0.2); }
-
-    .link-button.download {
-      background: rgba(99, 102, 241, 0.1); color: var(--primary); border-color: var(--primary);
-    }
-    .link-button.download:hover { background: rgba(99, 102, 241, 0.2); }
-
-    .link-button.dashboard {
-      background: var(--analysis-light); color: var(--analysis); border-color: var(--analysis);
-      display: none;
-    }
-    .link-button.dashboard:hover { background: rgba(6, 182, 212, 0.2); }
-    .link-button.dashboard.show { display: inline-flex; }
-
-    #refreshLink {
-      display: none;
-      padding: 8px 14px;
-      text-align: center;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: 1px solid var(--warning);
-      background: var(--warning-bg);
-      color: var(--warning);
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    #refreshLink.show { display: inline-flex; }
-    #refreshLink:hover { background: rgba(245, 158, 11, 0.2); }
-
-    .button-container { display: flex; gap: 10px; }
-
+    .button-container { display:flex; gap:10px; }
     textarea {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 14px;
-      border: 1.5px solid var(--card-border);
-      background: rgba(39, 39, 52, 0.4);
-      color: var(--text-main);
-      font-size: 0.95rem;
-      resize: vertical;
-      min-height: 80px;
-      max-height: 200px;
-      font-family: inherit;
-      transition: all 0.3s ease;
-      margin-bottom: 12px;
+      width:100%; padding:14px 18px; border-radius:14px; border:1.5px solid var(--card-border);
+      background:rgba(39,39,52,0.4); color:var(--text-main); font-size:0.95rem; resize:vertical;
+      min-height:80px; max-height:200px; font-family:inherit; margin-bottom:12px;
     }
-    textarea:focus { outline: none; border-color: var(--primary); background: rgba(39, 39, 52, 0.6); }
-
+    textarea:focus { outline:none; border-color:var(--primary); }
     button {
-      padding: 12px 28px;
-      border-radius: 12px;
-      border: none;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex: 1;
+      padding:12px 28px; border-radius:12px; border:none; font-size:0.95rem; font-weight:600;
+      cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; flex:1;
+      transition: all 0.2s;
     }
-    button:hover:not(:disabled) { transform: translateY(-2px); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    #sendButton {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    }
-
-    #analysisButton {
-      background: linear-gradient(135deg, var(--analysis) 0%, var(--analysis-hover) 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-      display: none;
-    }
-
-    #logicButton {
-      background: linear-gradient(135deg, var(--logic) 0%, var(--logic-hover) 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-      display: none;
-    }
-
-    .button-container.adjustment-mode #sendButton { display: none; }
+    button:disabled { opacity:0.5; cursor:not-allowed; }
+    #sendButton { background:linear-gradient(135deg,var(--primary),var(--primary-hover)); color:white; }
+    #analysisButton { background:linear-gradient(135deg,var(--analysis),var(--analysis-hover)); color:white; display:none; }
+    #logicButton { background:linear-gradient(135deg,var(--logic),var(--logic-hover)); color:white; display:none; }
+    .button-container.adjustment-mode #sendButton { display:none; }
     .button-container.adjustment-mode #analysisButton,
-    .button-container.adjustment-mode #logicButton { display: flex; }
-    .button-container.normal-mode #sendButton { display: flex; }
-
-    .button-hint {
-      font-size: 0.75rem; color: var(--text-muted);
-      margin-top: 8px; text-align: center; line-height: 1.4;
-    }
+    .button-container.adjustment-mode #logicButton { display:flex; }
+    .button-hint { font-size:0.75rem; color:var(--text-muted); margin-top:8px; text-align:center; }
   </style>
 </head>
 <body>
   <div id="chatInner">
     <div class="header">
-      <h2>
-        AI Slot Machine
-        <span class="ai-badge">Powered by AI</span>
-      </h2>
-      <div id="gameActiveIndicator" onclick="openGamePreview()">
-        Game Active - Click to View
-      </div>
+      <h2>AI Slot Machine <span class="ai-badge">Powered by AI</span></h2>
+      <div id="gameActiveIndicator" onclick="openGamePreview()">Game Active - Click to View</div>
     </div>
-    
     <div id="adjustmentModeBar">
-      <span>🎮 Game exists — Choose:</span>
-      <div class="adjustment-type-label analysis">
-        <span>📊 Analysis</span>
-        <span style="font-size: 0.75rem;">(Paytable, EV, Simulation)</span>
-      </div>
-      <div class="adjustment-type-label logic">
-        <span>⚙️ Game Logic</span>
-        <span style="font-size: 0.75rem;">(Grid, Mechanics, Code)</span>
-      </div>
+      <span>🎮 Game exists —</span>
+      <div class="type-label analysis">📊 Analysis</div>
+      <div class="type-label logic">⚙️ Logic</div>
     </div>
-
     <div id="messages"></div>
-
     <div class="input-area">
       <div id="waitMessage">
-        <div class="pulse-dots">
-          <div class="pulse-dot"></div>
-          <div class="pulse-dot"></div>
-          <div class="pulse-dot"></div>
-        </div>
-        <span id="waitText">AI is processing your request...</span>
+        <div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div>
+        <span id="waitText">AI is processing...</span>
       </div>
 
-      <div id="progressContainer">
-        <div class="progress-header">
-          <span id="progressLabel">Building your game</span>
-          <span id="percentText">0%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
+      <!-- Game creation/logic progress -->
+      <div class="progress-box" id="progressContainer">
+        <div class="progress-header"><span id="progressLabel">Building game</span><span id="percentText">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <!-- Analysis progress (separate!) -->
+      <div class="progress-box" id="analysisProgress">
+        <div class="progress-header"><span>📊 Analyzing paytable</span><span id="analysisPercent">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="analysisFill"></div></div>
       </div>
 
       <div id="links">
-        <a href="#" id="playLink" class="link-button play" target="_blank">▶️ Play Game</a>
+        <a href="#" id="playLink" class="link-button play" target="_blank">▶️ Play</a>
         <a href="#" id="downloadLink" class="link-button download" download>⬇️ Download</a>
-        <a href="#" id="dashboardLink" class="link-button dashboard" target="_blank">📊 Simulation</a>
+        <a href="#" id="dashboardLink" class="link-button dashboard" target="_blank">📊 Simulation Dashboard</a>
         <a href="#" id="refreshLink" onclick="refreshGame(event)">🔄 Refresh</a>
       </div>
 
-      <textarea 
-        id="messageInput" 
-        placeholder="Describe your slot machine game...&#10;&#10;Examples:&#10;• Create a space-themed slot with 5 reels&#10;• Make a plinko-style game with 16 positions&#10;• Design a crash-style multiplier game"
-      ></textarea>
-
+      <textarea id="messageInput" placeholder="Describe your game..."></textarea>
       <div class="button-container normal-mode" id="buttonContainer">
-        <button id="sendButton" onclick="sendMessage()">
-          <span>🚀 Create Game</span>
-        </button>
-        <button id="analysisButton" onclick="sendAnalysis()">
-          <span>📊 Analysis</span>
-        </button>
-        <button id="logicButton" onclick="sendLogicAdjustment()">
-          <span>⚙️ Game Logic</span>
-        </button>
+        <button id="sendButton" onclick="sendMessage()"><span>🚀 Create Game</span></button>
+        <button id="analysisButton" onclick="sendAnalysis()"><span>📊 Analysis</span></button>
+        <button id="logicButton" onclick="sendLogicAdjustment()"><span>⚙️ Game Logic</span></button>
       </div>
-
-      <div class="button-hint">
-        💡 Press Enter to send, Shift+Enter for new line
-      </div>
+      <div class="button-hint">💡 Enter to send, Shift+Enter for new line</div>
     </div>
   </div>
 
   <script>
-    const url = "https://jaafar.ngrok.app";
-    const session_id = Math.random().toString(36).substring(2, 15);
-    let gameExists = false;
-    let currentGameLink = null;
-    let gameWindow = null;
-    let lastAdjustmentComplete = false;
-    let lastConfirmationShown = false;
-    let analysisPolling = false;
+    var url = "https://jaafar.ngrok.app";
+    var session_id = Math.random().toString(36).substring(2, 15);
+    var gameExists = false;
+    var currentGameLink = null;
+    var gameWindow = null;
+    var lastAdjustmentComplete = false;
+    var lastConfirmationShown = false;
+    var analysisRunning = false;
 
-    function addMessage(text, sender, isAdjustment) {
-      const messagesDiv = document.getElementById("messages");
-      const messageDiv = document.createElement("div");
-      messageDiv.className = "message " + sender;
-      if (sender === "bot" && isAdjustment) messageDiv.classList.add("adjustment-msg");
-      messageDiv.textContent = text;
-      messagesDiv.appendChild(messageDiv);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    function addMsg(text, sender, hl) {
+      var d = document.getElementById("messages");
+      var m = document.createElement("div");
+      m.className = "message " + sender;
+      if (hl) m.classList.add("highlight");
+      m.textContent = text;
+      d.appendChild(m);
+      d.scrollTop = d.scrollHeight;
     }
 
-    function setButtons(disabled) {
-      document.getElementById("sendButton").disabled = disabled;
-      document.getElementById("analysisButton").disabled = disabled;
-      document.getElementById("logicButton").disabled = disabled;
+    function setBtns(off) {
+      document.getElementById("sendButton").disabled = off;
+      document.getElementById("analysisButton").disabled = off;
+      document.getElementById("logicButton").disabled = off;
     }
 
-    function setAdjustmentMode(enabled) {
-      var bc = document.getElementById("buttonContainer");
-      var bar = document.getElementById("adjustmentModeBar");
-      var ta = document.getElementById("messageInput");
-      if (enabled) {
-        bc.className = "button-container adjustment-mode";
-        bar.classList.add("active");
-        ta.placeholder = "Describe changes or click Analysis to verify paytable...\n\n• Analysis: Verifies paytable + opens simulation dashboard\n• Game Logic: Change grid, mechanics, code";
-      } else {
-        bc.className = "button-container normal-mode";
-        bar.classList.remove("active");
-        ta.placeholder = "Describe your slot machine game...\n\nExamples:\n• Create a space-themed slot with 5 reels\n• Make a plinko game\n• Design a crash multiplier game";
-      }
+    function setAdjMode(on) {
+      document.getElementById("buttonContainer").className = on ? "button-container adjustment-mode" : "button-container normal-mode";
+      document.getElementById("adjustmentModeBar").classList[on ? "add" : "remove"]("active");
     }
 
-    function updateGameActiveIndicator(exists, link) {
-      gameExists = exists;
-      currentGameLink = link;
-      var indicator = document.getElementById("gameActiveIndicator");
-      if (exists) {
-        indicator.classList.add("active");
-        setAdjustmentMode(true);
-      } else {
-        indicator.classList.remove("active");
-        setAdjustmentMode(false);
-      }
+    function updateGameIndicator(exists, link) {
+      gameExists = exists; currentGameLink = link;
+      document.getElementById("gameActiveIndicator").classList[exists ? "add" : "remove"]("active");
+      if (exists) setAdjMode(true);
     }
 
-    function openGamePreview() {
-      if (currentGameLink) window.open(url + currentGameLink, '_blank');
-    }
+    function openGamePreview() { if (currentGameLink) window.open(url + currentGameLink, '_blank'); }
+    function refreshGame(e) { e.preventDefault(); if (currentGameLink) window.open(url + currentGameLink + "?t=" + Date.now(), '_blank'); }
 
-    function refreshGame(event) {
-      event.preventDefault();
-      if (currentGameLink) window.open(url + currentGameLink + "?t=" + Date.now(), '_blank');
-    }
-
-    // ─── Create new game ───
+    // ─── Create Game ───
     function sendMessage() {
-      var input = document.getElementById("messageInput");
-      var message = input.value.trim();
-      if (!message || document.getElementById("sendButton").disabled) return;
-
-      addMessage(message, "user");
-      input.value = "";
+      var inp = document.getElementById("messageInput");
+      var msg = inp.value.trim();
+      if (!msg || document.getElementById("sendButton").disabled) return;
+      addMsg(msg, "user");
+      inp.value = "";
       document.getElementById("waitMessage").style.display = "flex";
-      setButtons(true);
-
+      setBtns(true);
       fetch(url + "/receive_message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message, session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status === "True") {
-          addMessage(data.reply, "bot", data.is_adjustment);
-        } else {
-          addMessage("Error: " + data.reply, "bot");
-        }
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: msg, session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        if (d.status === "True") addMsg(d.reply, "bot");
+        else addMsg("Error: " + d.reply, "bot");
         document.getElementById("waitMessage").style.display = "none";
-      })
-      .catch(function() {
-        addMessage("Connection error. Please retry.", "bot");
+      }).catch(function(){
+        addMsg("Connection error.", "bot");
         document.getElementById("waitMessage").style.display = "none";
-        setButtons(false);
+        setBtns(false);
       });
     }
 
-    // ─── Analysis (paytable verification + simulation dashboard) ───
+    // ─── Analysis — completely separate flow ───
     function sendAnalysis() {
       if (document.getElementById("analysisButton").disabled) return;
+      if (analysisRunning) return;
 
-      addMessage("📊 ANALYSIS: Verify paytable & build simulation dashboard", "user");
-      document.getElementById("waitMessage").style.display = "flex";
-      document.getElementById("waitText").textContent = "Verifying paytable integration...";
-      setButtons(true);
-      analysisPolling = true;
+      addMsg("📊 ANALYSIS: Verify paytable & build simulation dashboard", "user");
+      setBtns(true);
+      analysisRunning = true;
+
+      // Show analysis progress bar
+      var ap = document.getElementById("analysisProgress");
+      ap.style.display = "block";
+      document.getElementById("analysisFill").style.width = "0%";
+      document.getElementById("analysisPercent").textContent = "0%";
 
       fetch(url + "/analyze_game", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "analyze", session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status === "True") {
-          addMessage(data.reply, "bot", true);
-          lastAdjustmentComplete = false;
-          // Start polling for analysis result
-          pollAnalysisResult();
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        if (d.status === "True") {
+          addMsg(d.reply, "bot", true);
+          pollAnalysis();
         } else {
-          addMessage("Error: " + data.reply, "bot");
-          analysisPolling = false;
+          addMsg("Error: " + d.reply, "bot");
+          analysisRunning = false;
+          ap.style.display = "none";
+          setBtns(false);
         }
-        document.getElementById("waitMessage").style.display = "none";
-      })
-      .catch(function() {
-        addMessage("Connection error.", "bot");
-        document.getElementById("waitMessage").style.display = "none";
-        setButtons(false);
-        analysisPolling = false;
+      }).catch(function(){
+        addMsg("Connection error.", "bot");
+        analysisRunning = false;
+        ap.style.display = "none";
+        setBtns(false);
       });
     }
 
-    function pollAnalysisResult() {
-      if (!analysisPolling) return;
+    function pollAnalysis() {
+      if (!analysisRunning) return;
       fetch(url + "/get_analysis_result", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status === "success") {
-          analysisPolling = false;
-          // Show dashboard link
-          if (data.dashboard_path) {
-            var dashLink = document.getElementById("dashboardLink");
-            dashLink.href = url + data.dashboard_path;
-            dashLink.classList.add("show");
-            addMessage("✅ " + data.message, "bot", true);
-            addMessage("📊 Click 'Simulation' button to open the dashboard", "bot", true);
-          } else {
-            addMessage("⚠ " + data.message, "bot", true);
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        // Update progress bar
+        var pct = d.progress || 0;
+        document.getElementById("analysisFill").style.width = pct + "%";
+        document.getElementById("analysisPercent").textContent = pct + "%";
+
+        if (d.status === "success") {
+          // DONE
+          analysisRunning = false;
+          document.getElementById("analysisFill").style.width = "100%";
+          document.getElementById("analysisPercent").textContent = "100%";
+          setBtns(false);
+
+          addMsg("✅ " + d.message, "bot", true);
+
+          if (d.dashboard_path) {
+            var dl = document.getElementById("dashboardLink");
+            dl.href = url + d.dashboard_path;
+            dl.classList.add("show");
+            addMsg("📊 Click 'Simulation Dashboard' button to open it", "bot", true);
           }
         } else {
-          // Still pending, poll again
-          setTimeout(pollAnalysisResult, 2000);
+          // Still pending
+          setTimeout(pollAnalysis, 2000);
         }
-      })
-      .catch(function() {
-        setTimeout(pollAnalysisResult, 3000);
+      }).catch(function(){
+        setTimeout(pollAnalysis, 3000);
       });
     }
 
-    // ─── Game Logic adjustment ───
+    // ─── Game Logic ───
     function sendLogicAdjustment() {
-      var input = document.getElementById("messageInput");
-      var message = input.value.trim();
-      if (!message || document.getElementById("logicButton").disabled) return;
-
-      addMessage("⚙️ GAME LOGIC: " + message, "user");
-      input.value = "";
+      var inp = document.getElementById("messageInput");
+      var msg = inp.value.trim();
+      if (!msg || document.getElementById("logicButton").disabled) return;
+      addMsg("⚙️ LOGIC: " + msg, "user");
+      inp.value = "";
       document.getElementById("waitMessage").style.display = "flex";
-      document.getElementById("waitText").textContent = "Adjusting game logic...";
-      setButtons(true);
-
+      setBtns(true);
       fetch(url + "/adjust_logic", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message, session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status === "True") {
-          addMessage(data.reply, "bot", true);
-          lastAdjustmentComplete = false;
-        } else {
-          addMessage("Error: " + data.reply, "bot");
-        }
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: msg, session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        if (d.status === "True") { addMsg(d.reply, "bot", true); lastAdjustmentComplete = false; }
+        else addMsg("Error: " + d.reply, "bot");
         document.getElementById("waitMessage").style.display = "none";
-      })
-      .catch(function() {
-        addMessage("Connection error.", "bot");
+      }).catch(function(){
+        addMsg("Connection error.", "bot");
         document.getElementById("waitMessage").style.display = "none";
-        setButtons(false);
+        setBtns(false);
       });
     }
 
-    // ─── Status polling ───
+    // ─── Status polling (ONLY for game creation and logic adjustments) ───
     function checkStatus() {
       fetch(url + "/get_status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var percent = data.process_percent;
-        var progressContainer = document.getElementById("progressContainer");
-        var progressFill = document.getElementById("progressFill");
-        var links = document.getElementById("links");
-        var percentText = document.getElementById("percentText");
-        var refreshLink = document.getElementById("refreshLink");
-        var isAdjustment = data.is_adjustment;
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        var pct = d.process_percent;
+        var pc = document.getElementById("progressContainer");
+        var pf = document.getElementById("progressFill");
+        var lk = document.getElementById("links");
+        var pt = document.getElementById("percentText");
+        var rl = document.getElementById("refreshLink");
+        var isAdj = d.is_adjustment;
 
-        if (percent > 0 && percent < 100) {
-          progressContainer.style.display = "block";
-          links.style.display = "none";
-          progressFill.style.width = percent + "%";
-          if (percentText) percentText.innerText = percent + "%";
-          setButtons(true);
-          
-        } else if (percent === 100) {
-          progressFill.style.width = "100%";
-          if (percentText) percentText.innerText = "100%";
-          progressContainer.style.display = "block";
-          links.style.display = "flex";
-          
-          document.getElementById("playLink").href = url + data.game_link;
-          document.getElementById("downloadLink").href = url + data.download_link;
-          
-          updateGameActiveIndicator(true, data.game_link);
-          
-          if (isAdjustment || data.should_refresh) {
-            refreshLink.classList.add("show");
-          }
-          
-          if (data.confirmation_message && !lastConfirmationShown) {
+        if (pct > 0 && pct < 100) {
+          pc.style.display = "block";
+          lk.style.display = "none";
+          pf.style.width = pct + "%";
+          pt.innerText = pct + "%";
+          if (!analysisRunning) setBtns(true);
+
+        } else if (pct === 100) {
+          pf.style.width = "100%";
+          pt.innerText = "100%";
+          pc.style.display = "block";
+          lk.style.display = "flex";
+
+          document.getElementById("playLink").href = url + d.game_link;
+          document.getElementById("downloadLink").href = url + d.download_link;
+          updateGameIndicator(true, d.game_link);
+
+          if (isAdj || d.should_refresh) rl.classList.add("show");
+
+          if (d.confirmation_message && !lastConfirmationShown) {
             lastConfirmationShown = true;
-            addMessage("✅ " + data.confirmation_message, "bot", true);
+            addMsg("✅ " + d.confirmation_message, "bot", true);
           }
-          
-          if (!lastAdjustmentComplete && (isAdjustment || data.should_refresh)) {
+
+          // Auto-open game window ONLY for game creation and logic adj, NOT analysis
+          if (!lastAdjustmentComplete && !analysisRunning) {
             lastAdjustmentComplete = true;
-            var gameUrl = url + data.game_link + "?t=" + Date.now();
-            if (gameWindow && !gameWindow.closed) {
-              gameWindow.location.href = gameUrl;
-              gameWindow.focus();
-            } else {
-              gameWindow = window.open(gameUrl, 'slotGameWindow');
-            }
+            var gu = url + d.game_link + "?t=" + Date.now();
+            if (gameWindow && !gameWindow.closed) { gameWindow.location.href = gu; gameWindow.focus(); }
+            else gameWindow = window.open(gu, 'slotGameWindow');
           }
-          
-          if (!lastAdjustmentComplete && !isAdjustment && !gameWindow) {
-            lastAdjustmentComplete = true;
-            gameWindow = window.open(url + data.game_link, 'slotGameWindow');
-            addMessage("✅ Game created! Opened in new window.", "bot", false);
-          }
-          
-          setButtons(false);
-          
+
+          if (!analysisRunning) setBtns(false);
+
         } else {
-          progressContainer.style.display = "none";
-          links.style.display = "none";
-          progressFill.style.width = "0%";
+          pc.style.display = "none";
+          lk.style.display = "none";
+          pf.style.width = "0%";
           lastAdjustmentComplete = false;
           lastConfirmationShown = false;
         }
-      })
-      .catch(function() {});
+      }).catch(function(){});
     }
 
     function checkGameExists() {
       fetch(url + "/check_game_exists", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session_id: session_id })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.exists) updateGameActiveIndicator(true, data.game_link);
-      })
-      .catch(function() {});
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({session_id: session_id})
+      }).then(function(r){return r.json();}).then(function(d){
+        if (d.exists) updateGameIndicator(true, d.game_link);
+      }).catch(function(){});
     }
 
     document.getElementById("messageInput").addEventListener("keydown", function(e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        if (gameExists) {
-          sendLogicAdjustment();
-        } else {
-          sendMessage();
-        }
+        if (gameExists) sendLogicAdjustment();
+        else sendMessage();
       }
     });
 
