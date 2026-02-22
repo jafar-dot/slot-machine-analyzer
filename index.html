@@ -582,7 +582,7 @@
       setButtons(true);
       analysisPolling = true;
 
-      fetch(url + "/adjust_visual", {
+      fetch(url + "/analyze_game", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: "analyze", session_id: session_id })
