@@ -238,6 +238,13 @@
       inp.value = "";
       document.getElementById("waitMessage").style.display = "flex";
       setBtns(true);
+
+      // Reset all state for fresh game creation
+      lastAdjustmentComplete = false;
+      lastConfirmationShown = false;
+      gameWindow = null;
+      document.getElementById("dashboardLink").classList.remove("show");
+
       fetch(url + "/receive_message", {
         method: "POST", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({message: msg, session_id: session_id})
@@ -385,11 +392,12 @@
           }
 
           // Auto-open game window ONLY for game creation and logic adj, NOT analysis
-          if (!lastAdjustmentComplete && !analysisRunning) {
+          // Only open if game_link contains our session_id (safety check)
+          if (!lastAdjustmentComplete && !analysisRunning && d.game_link && d.game_link.indexOf(session_id) !== -1) {
             lastAdjustmentComplete = true;
             var gu = url + d.game_link + "?t=" + Date.now();
             if (gameWindow && !gameWindow.closed) { gameWindow.location.href = gu; gameWindow.focus(); }
-            else gameWindow = window.open(gu, 'slotGameWindow');
+            else gameWindow = window.open(gu, 'slotGameWindow_' + session_id);
           }
 
           if (!analysisRunning) setBtns(false);
