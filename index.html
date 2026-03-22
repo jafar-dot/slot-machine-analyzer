@@ -127,6 +127,75 @@
     }
     @keyframes livePulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
+    /* ─── Session ID Bar ─── */
+    #sessionBar {
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(187,134,252,0.03) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #sessionBar label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #sessionInput {
+      flex: 1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #sessionInput:focus { border-color: var(--border-active); background: rgba(255,255,255,0.03); }
+    #sessionInput::placeholder { color: var(--text-muted); }
+
+    #applySessionBtn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(187,134,252,0.3);
+      background: var(--analysis-glow);
+      color: var(--analysis);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    #applySessionBtn:hover { background: rgba(187,134,252,0.2); transform: translateY(-1px); }
+
+    /* ─── Session Error Toast ─── */
+    #sessionToast {
+      display: none;
+      padding: 10px 20px;
+      background: rgba(255, 68, 68, 0.12);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      border-radius: 8px;
+      color: var(--danger);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-align: center;
+      margin: 0 28px;
+      animation: toastIn 0.3s ease;
+    }
+    @keyframes toastIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
     /* ─── Mode Bar ─── */
     #adjustmentModeBar {
       display: none;
@@ -412,6 +481,15 @@
       </div>
       <div id="gameActiveIndicator" onclick="openGamePreview()">LIVE</div>
     </div>
+
+    <!-- Session ID Bar -->
+    <div id="sessionBar">
+      <label>Session ID</label>
+      <input type="text" id="sessionInput" placeholder="Enter existing session ID to load game..." />
+      <div id="applySessionBtn" onclick="applySession()">Apply</div>
+    </div>
+    <div id="sessionToast"></div>
+
     <div id="adjustmentModeBar">
       <span>Game loaded —</span>
       <div class="type-label analysis">📊 Analysis</div>
@@ -460,6 +538,7 @@
     var lastAdjustmentComplete = false;
     var lastConfirmationShown = false;
     var analysisRunning = false;
+    var toastTimer = null;
 
     function addMsg(text, sender, hl) {
       var d = document.getElementById("messages");
@@ -490,6 +569,87 @@
 
     function openGamePreview() { if (currentGameLink) window.open(url + currentGameLink, '_blank'); }
     function refreshGame(e) { e.preventDefault(); if (currentGameLink) window.open(url + currentGameLink + "?t=" + Date.now(), '_blank'); }
+
+    /* ─── Session Toast ─── */
+    function showSessionToast(msg, isError) {
+      var toast = document.getElementById("sessionToast");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      if (isError) {
+        toast.style.background = "rgba(255, 68, 68, 0.12)";
+        toast.style.borderColor = "rgba(255, 68, 68, 0.3)";
+        toast.style.color = "#ff4444";
+      } else {
+        toast.style.background = "rgba(0, 230, 118, 0.12)";
+        toast.style.borderColor = "rgba(0, 230, 118, 0.3)";
+        toast.style.color = "#00e676";
+      }
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        toast.style.display = "none";
+      }, 3000);
+    }
+
+    /* ─── Apply Session ID ─── */
+    function applySession() {
+      var inp = document.getElementById("sessionInput");
+      var newId = inp.value.trim();
+      if (!newId) return;
+
+      document.getElementById("applySessionBtn").textContent = "...";
+
+      fetch(url + "/load_session", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({session_id: newId})
+      }).then(function(r){return r.json();}).then(function(d){
+        document.getElementById("applySessionBtn").textContent = "APPLY";
+        if (d.exists) {
+          // Game found — switch session and activate adjustment mode
+          session_id = newId;
+          gameExists = true;
+          currentGameLink = d.game_link;
+
+          // Clear messages
+          document.getElementById("messages").innerHTML = "";
+
+          // Show links
+          var lk = document.getElementById("links");
+          lk.style.display = "flex";
+          document.getElementById("playLink").href = url + d.game_link;
+          document.getElementById("downloadLink").href = url + d.download_link;
+          document.getElementById("refreshLink").classList.add("show");
+
+          // Activate game indicator & adjustment mode
+          document.getElementById("gameActiveIndicator").classList.add("active");
+          setAdjMode(true);
+
+          // Progress bar to 100
+          var pc = document.getElementById("progressContainer");
+          pc.style.display = "block";
+          document.getElementById("progressFill").style.width = "100%";
+          document.getElementById("percentText").innerText = "100%";
+
+          addMsg("✅ Game loaded from session: " + newId, "bot", true);
+          showSessionToast("Game loaded successfully!", false);
+        } else {
+          // Game not found
+          showSessionToast("⚠ Game ID \"" + newId + "\" not found!", true);
+          inp.value = "";
+        }
+      }).catch(function(){
+        document.getElementById("applySessionBtn").textContent = "APPLY";
+        showSessionToast("Connection error — could not verify session.", true);
+      });
+    }
+
+    /* ─── Enter key on session input ─── */
+    document.getElementById("sessionInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        applySession();
+      }
+    });
 
     function sendMessage() {
       var inp = document.getElementById("messageInput");
