@@ -665,7 +665,11 @@
         method: "POST", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({message: msg, session_id: session_id})
       }).then(function(r){return r.json();}).then(function(d){
-        if (d.status === "True") addMsg(d.reply, "bot"); else addMsg("Error: " + d.reply, "bot");
+        if (d.status === "True") {
+          addMsg(d.reply, "bot");
+          addMsg("Session ID: " + session_id, "bot", true);
+          document.getElementById("sessionInput").value = session_id;
+        } else addMsg("Error: " + d.reply, "bot");
         document.getElementById("waitMessage").style.display = "none";
       }).catch(function(){
         addMsg("Connection error.", "bot");
