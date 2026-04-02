@@ -63,7 +63,7 @@
       overflow: hidden;
     }
 
-    /* ─── Header ─── */
+    
     .header {
       padding: 12px 16px;
       border-bottom: 1px solid var(--border);
@@ -132,7 +132,7 @@
     }
     @keyframes livePulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-    /* ─── Session ID Bar ─── */
+    
     #sessionBar {
       padding: 8px 16px;
       border-bottom: 1px solid var(--border);
@@ -187,7 +187,7 @@
     }
     #applySessionBtn:hover { background: rgba(187,134,252,0.2); }
 
-    /* ─── Session Error Toast ─── */
+    
     #sessionToast {
       display: none;
       padding: 8px 16px;
@@ -205,7 +205,7 @@
     }
     @keyframes toastIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ─── Mode Bar ─── */
+    
     #adjustmentModeBar {
       display: none;
       padding: 8px 16px;
@@ -235,7 +235,7 @@
     .type-label.analysis { background: var(--analysis-glow); color: var(--analysis); border: 1px solid rgba(187,134,252,0.2); }
     .type-label.logic { background: var(--logic-glow); color: var(--logic); border: 1px solid rgba(255,193,7,0.2); }
 
-    /* ─── Messages ─── */
+    
     #messages {
       flex: 1;
       overflow-y: auto;
@@ -281,7 +281,7 @@
       background: linear-gradient(135deg, rgba(187,134,252,0.06), rgba(187,134,252,0.02));
     }
 
-    /* ─── Input Area ─── */
+    
     .input-area {
       padding: 10px 16px 12px;
       background: var(--bg-card);
@@ -312,7 +312,7 @@
     .pulse-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes pd { 0%,80%,100%{opacity:0.3;transform:scale(0.8);} 40%{opacity:1;transform:scale(1.2);} }
 
-    /* ─── Progress Bars ─── */
+    
     .progress-box { display: none; margin-bottom: 8px; }
     .progress-header {
       display: flex;
@@ -345,7 +345,7 @@
       box-shadow: 0 0 10px rgba(187,134,252,0.3);
     }
 
-    /* ─── Links ─── */
+    
     #links { display: none; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
     .link-button {
       flex: 1;
@@ -406,7 +406,7 @@
     #refreshLink.show { display: inline-flex; }
     #refreshLink:hover { background: rgba(255,193,7,0.15); }
 
-    /* ─── Textarea ─── */
+    
     textarea {
       width: 100%;
       padding: 10px 14px;
@@ -425,7 +425,7 @@
     textarea:focus { outline: none; border-color: var(--border-active); background: rgba(255,255,255,0.03); }
     textarea::placeholder { color: var(--text-muted); }
 
-    /* ─── Buttons ─── */
+    
     .button-container { display: flex; gap: 6px; }
 
     button {
@@ -483,7 +483,7 @@
       letter-spacing: 0.03em;
     }
 
-    /* ─── Mobile ─── */
+    
     @media (max-width: 600px) {
       body { padding: 0; }
       #chatInner { height: 100vh; height: 100dvh; border-radius: 0; border: none; }
@@ -596,6 +596,14 @@
       if (exists) setAdjMode(true);
     }
 
+    function showDashboard(dashPath) {
+      if (dashPath) {
+        var dl = document.getElementById("dashboardLink");
+        dl.href = url + dashPath;
+        dl.classList.add("show");
+      }
+    }
+
     function openGamePreview() { if (currentGameLink) window.open(url + currentGameLink, '_blank'); }
     function refreshGame(e) { e.preventDefault(); if (currentGameLink) window.open(url + currentGameLink + "?t=" + Date.now(), '_blank'); }
 
@@ -640,6 +648,10 @@
           document.getElementById("percentText").innerText = "100%";
           addMsg("✅ Game loaded: " + newId, "bot", true);
           showSessionToast("Game loaded!", false);
+          if (d.dashboard_path) {
+            showDashboard(d.dashboard_path);
+            addMsg("📊 Dashboard available", "bot", true);
+          }
         } else {
           showSessionToast("⚠ \"" + newId + "\" not found!", true); inp.value = "";
         }
@@ -709,8 +721,7 @@
           document.getElementById("analysisPercent").textContent = "100%";
           setBtns(false); addMsg("✅ " + d.message, "bot", true);
           if (d.dashboard_path) {
-            var dl = document.getElementById("dashboardLink");
-            dl.href = url + d.dashboard_path; dl.classList.add("show");
+            showDashboard(d.dashboard_path);
             addMsg("📊 Dashboard ready", "bot", true);
           }
         } else { setTimeout(pollAnalysis, 2000); }
@@ -759,6 +770,7 @@
           document.getElementById("downloadLink").href = url + d.download_link;
           updateGameIndicator(true, d.game_link);
           if (isAdj || d.should_refresh) rl.classList.add("show");
+          if (d.dashboard_path) showDashboard(d.dashboard_path);
           if (d.confirmation_message && !lastConfirmationShown) {
             lastConfirmationShown = true; addMsg("✅ " + d.confirmation_message, "bot", true);
           }
@@ -781,7 +793,11 @@
         method: "POST", headers: {"Content-Type":"application/json"},
         body: JSON.stringify({session_id: session_id})
       }).then(function(r){return r.json();}).then(function(d){
-        if (d.exists) updateGameIndicator(true, d.game_link);
+        if (d.exists) {
+          updateGameIndicator(true, d.game_link);
+          if (d.dashboard_path) showDashboard(d.dashboard_path);
+          if (d.download_link) document.getElementById("downloadLink").href = url + d.download_link;
+        }
       }).catch(function(){});
     }
 
