@@ -781,7 +781,7 @@
             else gameWindow = window.open(gu, 'gameWindow_' + session_id);
           }
           if (!analysisRunning) setBtns(false);
-        } else {
+        } else if (!gameExists) {
           pc.style.display = "none"; lk.style.display = "none"; pf.style.width = "0%";
           lastAdjustmentComplete = false; lastConfirmationShown = false;
         }
