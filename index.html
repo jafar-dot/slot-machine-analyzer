@@ -1,815 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>AI Slot Machine Architecture</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #00e5ff;
-      --primary-hover: #00b8d4;
-      --primary-glow: rgba(0, 229, 255, 0.15);
-      --primary-deep: rgba(0, 229, 255, 0.06);
-      --analysis: #bb86fc;
-      --analysis-hover: #9c64fb;
-      --analysis-glow: rgba(187, 134, 252, 0.12);
-      --logic: #ffc107;
-      --logic-hover: #ffab00;
-      --logic-glow: rgba(255, 193, 7, 0.12);
-      --bg: #05060a;
-      --bg-card: #0a0b12;
-      --bg-elevated: #101118;
-      --border: rgba(0, 229, 255, 0.08);
-      --border-active: rgba(0, 229, 255, 0.25);
-      --text: #e8eaed;
-      --text-dim: #6b7280;
-      --text-muted: #3f4553;
-      --success: #00e676;
-      --success-glow: rgba(0, 230, 118, 0.1);
-      --danger: #ff4444;
-      --radius: 12px;
-    }
+<!-- === FRONTEND VERSION PANEL PATCH ===
+     ADD these sections to the existing index.html frontend -->
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg);
-      background-image:
-        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0,229,255,0.03), transparent),
-        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(187,134,252,0.02), transparent);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      min-height: 100dvh;
-      color: var(--text);
-      overflow: hidden;
-      padding: 8px;
-    }
-
-    #chatInner {
-      width: 100%;
-      max-width: 920px;
-      height: 96vh;
-      height: 96dvh;
-      background: var(--bg-card);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 0 60px -20px rgba(0,229,255,0.05), 0 20px 40px -15px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    
-    .header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(0,229,255,0.03) 0%, transparent 100%);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .header-left { display: flex; align-items: center; gap: 10px; }
-
-    .logo-icon {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, var(--primary), var(--analysis));
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 700;
-      box-shadow: 0 0 15px rgba(0,229,255,0.2);
-      flex-shrink: 0;
-    }
-
-    h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(0.8rem, 2.5vw, 1.1rem);
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.02em;
-      white-space: nowrap;
-    }
-
-    h2 span {
-      font-weight: 400;
-      color: var(--text-dim);
-      font-size: 0.75em;
-      margin-left: 4px;
-    }
-
-    #gameActiveIndicator {
+<!-- 1. ADD THIS CSS inside <style> tag, before the closing </style> -->
+<style>
+    /* VERSION PANEL */
+    #versionPanel {
       display: none;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      background: var(--success-glow);
-      border: 1px solid rgba(0,230,118,0.3);
-      border-radius: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 500;
-      color: var(--success);
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-    #gameActiveIndicator:hover { background: rgba(0,230,118,0.15); }
-    #gameActiveIndicator.active { display: flex; }
-    #gameActiveIndicator::before {
-      content: '';
-      width: 5px; height: 5px;
-      background: var(--success);
-      border-radius: 50%;
-      box-shadow: 0 0 6px var(--success);
-      animation: livePulse 2s ease infinite;
-    }
-    @keyframes livePulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-
-    
-    #sessionBar {
-      padding: 8px 16px;
+      padding: 6px 16px;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(187,134,252,0.03) 0%, transparent 100%);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      background: linear-gradient(180deg, rgba(255,193,7,0.03) 0%, transparent 100%);
       flex-shrink: 0;
-    }
-
-    #sessionBar label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    #sessionInput {
-      flex: 1;
-      min-width: 0;
-      padding: 7px 10px;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    #sessionInput:focus { border-color: var(--border-active); background: rgba(255,255,255,0.03); }
-    #sessionInput::placeholder { color: var(--text-muted); }
-
-    #applySessionBtn {
-      padding: 7px 12px;
-      border-radius: 7px;
-      border: 1px solid rgba(187,134,252,0.3);
-      background: var(--analysis-glow);
-      color: var(--analysis);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      transition: all 0.2s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    #applySessionBtn:hover { background: rgba(187,134,252,0.2); }
-
-    
-    #sessionToast {
-      display: none;
-      padding: 8px 16px;
-      background: rgba(255, 68, 68, 0.12);
-      border: 1px solid rgba(255, 68, 68, 0.3);
-      border-radius: 8px;
-      color: var(--danger);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      text-align: center;
-      margin: 0 16px;
-      animation: toastIn 0.3s ease;
-      flex-shrink: 0;
-    }
-    @keyframes toastIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
-
-    
-    #adjustmentModeBar {
-      display: none;
-      padding: 8px 16px;
-      background: var(--primary-deep);
-      border-bottom: 1px solid var(--border);
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      flex-shrink: 0;
-    }
-    #adjustmentModeBar.active { display: flex; }
-
-    .type-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      font-size: 0.62rem;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-    .type-label.analysis { background: var(--analysis-glow); color: var(--analysis); border: 1px solid rgba(187,134,252,0.2); }
-    .type-label.logic { background: var(--logic-glow); color: var(--logic); border: 1px solid rgba(255,193,7,0.2); }
-
-    
-    #messages {
-      flex: 1;
+      max-height: 140px;
       overflow-y: auto;
-      padding: 14px 16px;
+    }
+    #versionPanel.active { display: block; }
+    #versionPanel::-webkit-scrollbar { width: 3px; }
+    #versionPanel::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 3px; }
+
+    .version-header {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      scroll-behavior: smooth;
-      min-height: 0;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
     }
-    #messages::-webkit-scrollbar { width: 3px; }
-    #messages::-webkit-scrollbar-track { background: transparent; }
-    #messages::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 3px; }
-
-    .message {
-      max-width: 85%;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      font-size: 0.85rem;
-      line-height: 1.6;
-      word-wrap: break-word;
-      animation: msgIn 0.25s ease;
+    .version-header span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
     }
-    @keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-    .user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(0,229,255,0.06));
+    .version-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .version-item:hover {
+      background: rgba(255,255,255,0.03);
+      border-color: var(--border);
+    }
+    .version-item.current {
+      background: var(--logic-glow);
+      border-color: rgba(255,193,7,0.25);
+      color: var(--logic);
+    }
+    .version-item .v-num {
+      font-weight: 600;
+      color: var(--logic);
+      min-width: 24px;
+    }
+    .version-item .v-desc {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: var(--text);
-      border: 1px solid rgba(0,229,255,0.15);
-      border-bottom-right-radius: 4px;
+      font-size: 0.63rem;
     }
-
-    .bot {
-      align-self: flex-start;
-      background: var(--bg-elevated);
-      color: var(--text);
-      border-bottom-left-radius: 4px;
-      border: 1px solid var(--border);
-    }
-    .bot.highlight {
-      border-color: rgba(187,134,252,0.3);
-      background: linear-gradient(135deg, rgba(187,134,252,0.06), rgba(187,134,252,0.02));
-    }
-
-    
-    .input-area {
-      padding: 10px 16px 12px;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
+    .version-item .v-time {
+      color: var(--text-muted);
+      font-size: 0.58rem;
       flex-shrink: 0;
     }
 
-    #waitMessage {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      padding: 8px 12px;
-      background: var(--primary-deep);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-    .pulse-dots { display: flex; gap: 3px; }
-    .pulse-dot {
-      width: 4px; height: 4px;
-      background: var(--primary);
-      border-radius: 50%;
-      animation: pd 1.4s ease infinite;
-    }
-    .pulse-dot:nth-child(2) { animation-delay: 0.2s; }
-    .pulse-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pd { 0%,80%,100%{opacity:0.3;transform:scale(0.8);} 40%{opacity:1;transform:scale(1.2);} }
-
-    
-    .progress-box { display: none; margin-bottom: 8px; }
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--text-dim);
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-    .progress-track {
-      width: 100%; height: 3px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease;
-      width: 0%;
-    }
-    #progressContainer .progress-fill {
-      background: linear-gradient(90deg, var(--primary), var(--analysis));
-      box-shadow: 0 0 10px rgba(0,229,255,0.3);
-    }
-    #analysisProgress .progress-fill {
-      background: linear-gradient(90deg, var(--analysis), #e040fb);
-      box-shadow: 0 0 10px rgba(187,134,252,0.3);
-    }
-
-    
-    #links { display: none; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
-    .link-button {
-      flex: 1;
-      padding: 7px 10px;
-      text-align: center;
+    #versionToggle {
+      padding: 4px 10px;
       border-radius: 7px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px solid;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      min-width: 80px;
-      transition: all 0.2s;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-    .link-button:hover { transform: translateY(-1px); }
-    .link-button.play {
-      background: var(--success-glow);
-      color: var(--success);
-      border-color: rgba(0,230,118,0.25);
-    }
-    .link-button.play:hover { background: rgba(0,230,118,0.15); }
-    .link-button.download {
-      background: var(--primary-deep);
-      color: var(--primary);
-      border-color: rgba(0,229,255,0.2);
-    }
-    .link-button.download:hover { background: rgba(0,229,255,0.1); }
-    .link-button.dashboard {
-      background: var(--analysis-glow);
-      color: var(--analysis);
-      border-color: rgba(187,134,252,0.2);
-      display: none;
-    }
-    .link-button.dashboard.show { display: inline-flex; }
-    .link-button.dashboard:hover { background: rgba(187,134,252,0.15); }
-
-    #refreshLink {
-      display: none;
-      padding: 7px 10px;
-      border-radius: 7px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      font-weight: 500;
-      text-decoration: none;
       border: 1px solid rgba(255,193,7,0.25);
       background: var(--logic-glow);
       color: var(--logic);
-      cursor: pointer;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-    #refreshLink.show { display: inline-flex; }
-    #refreshLink:hover { background: rgba(255,193,7,0.15); }
-
-    
-    textarea {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      color: var(--text);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.85rem;
-      resize: none;
-      min-height: 56px;
-      max-height: 120px;
-      margin-bottom: 8px;
-      transition: border-color 0.2s;
-    }
-    textarea:focus { outline: none; border-color: var(--border-active); background: rgba(255,255,255,0.03); }
-    textarea::placeholder { color: var(--text-muted); }
-
-    
-    .button-container { display: flex; gap: 6px; }
-
-    button {
-      padding: 9px 16px;
-      border-radius: 10px;
-      border: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      flex: 1;
-      transition: all 0.2s;
-      letter-spacing: -0.01em;
-    }
-    button:disabled { opacity: 0.35; cursor: not-allowed; }
-    button:not(:disabled):hover { transform: translateY(-1px); }
-
-    #sendButton {
-      background: var(--primary);
-      color: var(--bg);
-      box-shadow: 0 0 15px rgba(0,229,255,0.15);
-    }
-    #sendButton:not(:disabled):hover { box-shadow: 0 0 25px rgba(0,229,255,0.25); }
-
-    #analysisButton {
-      background: var(--analysis);
-      color: var(--bg);
-      display: none;
-      box-shadow: 0 0 15px rgba(187,134,252,0.15);
-    }
-    #analysisButton:not(:disabled):hover { box-shadow: 0 0 25px rgba(187,134,252,0.25); }
-
-    #logicButton {
-      background: var(--logic);
-      color: var(--bg);
-      display: none;
-      box-shadow: 0 0 15px rgba(255,193,7,0.15);
-    }
-    #logicButton:not(:disabled):hover { box-shadow: 0 0 25px rgba(255,193,7,0.25); }
-
-    .button-container.adjustment-mode #sendButton { display: none; }
-    .button-container.adjustment-mode #analysisButton,
-    .button-container.adjustment-mode #logicButton { display: flex; }
-
-    .button-hint {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.6rem;
-      color: var(--text-muted);
-      margin-top: 6px;
-      text-align: center;
+      font-weight: 500;
+      cursor: pointer;
       letter-spacing: 0.03em;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      display: none;
     }
+    #versionToggle.show { display: inline-flex; }
+    #versionToggle:hover { background: rgba(255,193,7,0.15); }
+</style>
 
-    
-    @media (max-width: 600px) {
-      body { padding: 0; }
-      #chatInner { height: 100vh; height: 100dvh; border-radius: 0; border: none; }
-      .header { padding: 10px 12px; }
-      #sessionBar { padding: 6px 12px; gap: 6px; }
-      #sessionBar label { font-size: 0.6rem; }
-      #sessionInput { padding: 6px 8px; font-size: 0.7rem; }
-      #applySessionBtn { padding: 6px 10px; font-size: 0.6rem; }
-      #messages { padding: 10px 12px; }
-      .message { max-width: 92%; padding: 8px 12px; font-size: 0.8rem; }
-      .input-area { padding: 8px 12px 10px; }
-      textarea { min-height: 48px; font-size: 0.82rem; padding: 8px 12px; }
-      button { padding: 8px 12px; font-size: 0.78rem; }
-      .link-button { padding: 6px 8px; font-size: 0.62rem; min-width: 60px; }
-      h2 span { display: none; }
-    }
-  </style>
-</head>
-<body>
-  <div id="chatInner">
-    <div class="header">
-      <div class="header-left">
-        <div class="logo-icon">🎰</div>
-        <h2>AI Slot Machine Architecture <span>· AI-Powered</span></h2>
-      </div>
-      <div id="gameActiveIndicator" onclick="openGamePreview()">LIVE</div>
-    </div>
-
-    <div id="sessionBar">
-      <label>Session</label>
-      <input type="text" id="sessionInput" placeholder="Enter session ID..." />
-      <div id="applySessionBtn" onclick="applySession()">Apply</div>
-    </div>
-    <div id="sessionToast"></div>
-
-    <div id="adjustmentModeBar">
-      <span>Game loaded —</span>
-      <div class="type-label analysis">📊 Analysis</div>
-      <div class="type-label logic">⚙ Edit Game</div>
-    </div>
-    <div id="messages"></div>
-    <div class="input-area">
-      <div id="waitMessage">
-        <div class="pulse-dots"><div class="pulse-dot"></div><div class="pulse-dot"></div><div class="pulse-dot"></div></div>
-        <span id="waitText">Processing...</span>
-      </div>
-
-      <div class="progress-box" id="progressContainer">
-        <div class="progress-header"><span id="progressLabel">Building</span><span id="percentText">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      </div>
-
-      <div class="progress-box" id="analysisProgress">
-        <div class="progress-header"><span>Analyzing</span><span id="analysisPercent">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="analysisFill"></div></div>
-      </div>
-
-      <div id="links">
-        <a href="#" id="playLink" class="link-button play" target="_blank">▶ Play</a>
-        <a href="#" id="downloadLink" class="link-button download" download>↓ Download</a>
-        <a href="#" id="dashboardLink" class="link-button dashboard" target="_blank">📊 Dashboard</a>
-        <a href="#" id="refreshLink" onclick="refreshGame(event)">↻ Refresh</a>
-      </div>
-
-      <textarea id="messageInput" placeholder="Describe your slot game concept..."></textarea>
-      <div class="button-container normal-mode" id="buttonContainer">
-        <button id="sendButton" onclick="sendMessage()"><span>Create Game</span></button>
-        <button id="analysisButton" onclick="sendAnalysis()"><span>📊 Analysis</span></button>
-        <button id="logicButton" onclick="sendLogicAdjustment()"><span>⚙ Edit Game</span></button>
-      </div>
-      <div class="button-hint">↵ enter to send · ⇧↵ new line</div>
-    </div>
+<!-- 2. ADD THIS HTML after #adjustmentModeBar div -->
+<div id="versionPanel">
+  <div class="version-header">
+    <span>Game Versions</span>
+    <span id="versionCount">0 versions</span>
   </div>
+  <div id="versionList"></div>
+</div>
 
-  <script>
-    var url = "https://jaafar.ngrok.app";
-    var session_id = Math.random().toString(36).substring(2, 15);
-    var gameExists = false;
-    var currentGameLink = null;
-    var gameWindow = null;
-    var lastAdjustmentComplete = false;
-    var lastConfirmationShown = false;
-    var analysisRunning = false;
-    var toastTimer = null;
+<!-- 3. ADD the version toggle button inside #links div, after #refreshLink -->
+<a href="#" id="versionToggle" onclick="toggleVersionPanel(event)">⏱ Versions</a>
 
-    function addMsg(text, sender, hl) {
-      var d = document.getElementById("messages");
-      var m = document.createElement("div");
-      m.className = "message " + sender;
-      if (hl) m.classList.add("highlight");
-      m.textContent = text;
-      d.appendChild(m);
-      d.scrollTop = d.scrollHeight;
-    }
+<!-- 4. ADD THIS JAVASCRIPT before the closing </script> tag -->
+<script>
+    var versionsLoaded = false;
 
-    function setBtns(off) {
-      document.getElementById("sendButton").disabled = off;
-      document.getElementById("analysisButton").disabled = off;
-      document.getElementById("logicButton").disabled = off;
-    }
-
-    function setAdjMode(on) {
-      document.getElementById("buttonContainer").className = on ? "button-container adjustment-mode" : "button-container normal-mode";
-      document.getElementById("adjustmentModeBar").classList[on ? "add" : "remove"]("active");
-    }
-
-    function updateGameIndicator(exists, link) {
-      gameExists = exists; currentGameLink = link;
-      document.getElementById("gameActiveIndicator").classList[exists ? "add" : "remove"]("active");
-      if (exists) setAdjMode(true);
-    }
-
-    function showDashboard(dashPath) {
-      if (dashPath) {
-        var dl = document.getElementById("dashboardLink");
-        dl.href = url + dashPath;
-        dl.classList.add("show");
-      }
-    }
-
-    function openGamePreview() { if (currentGameLink) window.open(url + currentGameLink, '_blank'); }
-    function refreshGame(e) { e.preventDefault(); if (currentGameLink) window.open(url + currentGameLink + "?t=" + Date.now(), '_blank'); }
-
-    function showSessionToast(msg, isError) {
-      var toast = document.getElementById("sessionToast");
-      toast.textContent = msg;
-      toast.style.display = "block";
-      if (isError) {
-        toast.style.background = "rgba(255, 68, 68, 0.12)";
-        toast.style.borderColor = "rgba(255, 68, 68, 0.3)";
-        toast.style.color = "#ff4444";
+    function toggleVersionPanel(e) {
+      if (e) e.preventDefault();
+      var panel = document.getElementById("versionPanel");
+      if (panel.classList.contains("active")) {
+        panel.classList.remove("active");
       } else {
-        toast.style.background = "rgba(0, 230, 118, 0.12)";
-        toast.style.borderColor = "rgba(0, 230, 118, 0.3)";
-        toast.style.color = "#00e676";
+        panel.classList.add("active");
+        loadVersions();
       }
-      if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(function() { toast.style.display = "none"; }, 3000);
     }
 
-    function applySession() {
-      var inp = document.getElementById("sessionInput");
-      var newId = inp.value.trim();
-      if (!newId) return;
-      document.getElementById("applySessionBtn").textContent = "...";
-      fetch(url + "/load_session", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({session_id: newId})
+    function loadVersions() {
+      fetch(url + "/list_versions", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({session_id: session_id})
       }).then(function(r){return r.json();}).then(function(d){
-        document.getElementById("applySessionBtn").textContent = "APPLY";
-        if (d.exists) {
-          session_id = newId; gameExists = true; currentGameLink = d.game_link;
-          document.getElementById("messages").innerHTML = "";
-          var lk = document.getElementById("links"); lk.style.display = "flex";
-          document.getElementById("playLink").href = url + d.game_link;
-          document.getElementById("downloadLink").href = url + d.download_link;
-          document.getElementById("refreshLink").classList.add("show");
-          document.getElementById("gameActiveIndicator").classList.add("active");
-          setAdjMode(true);
-          var pc = document.getElementById("progressContainer"); pc.style.display = "block";
-          document.getElementById("progressFill").style.width = "100%";
-          document.getElementById("percentText").innerText = "100%";
-          addMsg("✅ Game loaded: " + newId, "bot", true);
-          showSessionToast("Game loaded!", false);
-          if (d.dashboard_path) {
-            showDashboard(d.dashboard_path);
-            addMsg("📊 Dashboard available", "bot", true);
-          }
-        } else {
-          showSessionToast("⚠ \"" + newId + "\" not found!", true); inp.value = "";
+        var list = document.getElementById("versionList");
+        var countEl = document.getElementById("versionCount");
+        list.innerHTML = "";
+        var versions = d.versions || [];
+        countEl.textContent = versions.length + " version" + (versions.length !== 1 ? "s" : "");
+        if (versions.length === 0) {
+          list.innerHTML = '<div style="color:var(--text-muted);font-size:0.65rem;padding:4px;">No versions yet</div>';
+          return;
         }
-      }).catch(function(){
-        document.getElementById("applySessionBtn").textContent = "APPLY";
-        showSessionToast("Connection error.", true);
+        var currentV = d.current_version || 0;
+        for (var i = versions.length - 1; i >= 0; i--) {
+          var v = versions[i];
+          var item = document.createElement("div");
+          item.className = "version-item" + (v.version_num === currentV ? " current" : "");
+          var ts = v.timestamp ? new Date(v.timestamp) : new Date();
+          var timeStr = ts.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+          var dateStr = ts.toLocaleDateString([], {month:'short', day:'numeric'});
+          item.innerHTML = '<span class="v-num">v' + v.version_num + '</span>' +
+            '<span class="v-desc">' + (v.description || "—").substring(0, 50) + '</span>' +
+            '<span class="v-time">' + dateStr + ' ' + timeStr + '</span>';
+          item.setAttribute("data-vnum", v.version_num);
+          item.onclick = function() {
+            var vnum = parseInt(this.getAttribute("data-vnum"));
+            revertToVersion(vnum);
+          };
+          list.appendChild(item);
+        }
+        versionsLoaded = true;
+      }).catch(function(e){
+        console.error("Failed to load versions:", e);
       });
     }
 
-    document.getElementById("sessionInput").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") { e.preventDefault(); applySession(); }
-    });
-
-    function sendMessage() {
-      var inp = document.getElementById("messageInput");
-      var msg = inp.value.trim();
-      if (!msg || document.getElementById("sendButton").disabled) return;
-      addMsg(msg, "user"); inp.value = "";
-      document.getElementById("waitMessage").style.display = "flex";
-      setBtns(true); lastAdjustmentComplete = false; lastConfirmationShown = false;
-      gameWindow = null; document.getElementById("dashboardLink").classList.remove("show");
-      fetch(url + "/receive_message", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({message: msg, session_id: session_id})
+    function revertToVersion(vnum) {
+      if (!confirm("Revert to version v" + vnum + "? Current state will be auto-saved first.")) return;
+      addMsg("⏱ Reverting to v" + vnum + "...", "user");
+      setBtns(true);
+      fetch(url + "/revert_version", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({session_id: session_id, version_num: vnum})
       }).then(function(r){return r.json();}).then(function(d){
-        if (d.status === "True") {
-          addMsg(d.reply, "bot");
-          addMsg("Session ID: " + session_id, "bot", true);
-          document.getElementById("sessionInput").value = session_id;
-        } else addMsg("Error: " + d.reply, "bot");
-        document.getElementById("waitMessage").style.display = "none";
-      }).catch(function(){
-        addMsg("Connection error.", "bot");
-        document.getElementById("waitMessage").style.display = "none"; setBtns(false);
-      });
-    }
-
-    function sendAnalysis() {
-      if (document.getElementById("analysisButton").disabled || analysisRunning) return;
-      addMsg("📊 Running analysis...", "user"); setBtns(true); analysisRunning = true;
-      var ap = document.getElementById("analysisProgress"); ap.style.display = "block";
-      document.getElementById("analysisFill").style.width = "0%";
-      document.getElementById("analysisPercent").textContent = "0%";
-      fetch(url + "/analyze_game", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({session_id: session_id})
-      }).then(function(r){return r.json();}).then(function(d){
-        if (d.status === "True") { addMsg(d.reply, "bot", true); pollAnalysis(); }
-        else { addMsg("Error: " + d.reply, "bot"); analysisRunning = false; ap.style.display = "none"; setBtns(false); }
-      }).catch(function(){
-        addMsg("Connection error.", "bot"); analysisRunning = false; ap.style.display = "none"; setBtns(false);
-      });
-    }
-
-    function pollAnalysis() {
-      if (!analysisRunning) return;
-      fetch(url + "/get_analysis_result", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({session_id: session_id})
-      }).then(function(r){return r.json();}).then(function(d){
-        var pct = d.progress || 0;
-        document.getElementById("analysisFill").style.width = pct + "%";
-        document.getElementById("analysisPercent").textContent = pct + "%";
-        if (d.status === "success") {
-          analysisRunning = false;
-          document.getElementById("analysisFill").style.width = "100%";
-          document.getElementById("analysisPercent").textContent = "100%";
-          setBtns(false); addMsg("✅ " + d.message, "bot", true);
-          if (d.dashboard_path) {
-            showDashboard(d.dashboard_path);
-            addMsg("📊 Dashboard ready", "bot", true);
-          }
-        } else { setTimeout(pollAnalysis, 2000); }
-      }).catch(function(){ setTimeout(pollAnalysis, 3000); });
-    }
-
-    function sendLogicAdjustment() {
-      var inp = document.getElementById("messageInput");
-      var msg = inp.value.trim();
-      if (!msg || document.getElementById("logicButton").disabled) return;
-      addMsg("⚙ " + msg, "user"); inp.value = "";
-      document.getElementById("waitMessage").style.display = "flex"; setBtns(true);
-      fetch(url + "/adjust_logic", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({message: msg, session_id: session_id})
-      }).then(function(r){return r.json();}).then(function(d){
-        if (d.status === "True") { addMsg(d.reply, "bot", true); lastAdjustmentComplete = false; }
-        else addMsg("Error: " + d.reply, "bot");
-        document.getElementById("waitMessage").style.display = "none";
-      }).catch(function(){
-        addMsg("Connection error.", "bot");
-        document.getElementById("waitMessage").style.display = "none"; setBtns(false);
-      });
-    }
-
-    function checkStatus() {
-      fetch(url + "/get_status", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({session_id: session_id})
-      }).then(function(r){return r.json();}).then(function(d){
-        var pct = d.process_percent;
-        var pc = document.getElementById("progressContainer");
-        var pf = document.getElementById("progressFill");
-        var lk = document.getElementById("links");
-        var pt = document.getElementById("percentText");
-        var rl = document.getElementById("refreshLink");
-        var isAdj = d.is_adjustment;
-        if (pct > 0 && pct < 100) {
-          pc.style.display = "block"; lk.style.display = "none";
-          pf.style.width = pct + "%"; pt.innerText = pct + "%";
-          if (!analysisRunning) setBtns(true);
-        } else if (pct === 100) {
-          pf.style.width = "100%"; pt.innerText = "100%";
-          pc.style.display = "block"; lk.style.display = "flex";
-          document.getElementById("playLink").href = url + d.game_link;
-          document.getElementById("downloadLink").href = url + d.download_link;
-          updateGameIndicator(true, d.game_link);
-          if (isAdj || d.should_refresh) rl.classList.add("show");
-          if (d.dashboard_path) showDashboard(d.dashboard_path);
-          if (d.confirmation_message && !lastConfirmationShown) {
-            lastConfirmationShown = true; addMsg("✅ " + d.confirmation_message, "bot", true);
-          }
-          if (!lastAdjustmentComplete && !analysisRunning && d.game_link && d.game_link.indexOf(session_id) !== -1) {
-            lastAdjustmentComplete = true;
-            var gu = url + d.game_link + "?t=" + Date.now();
+        setBtns(false);
+        if (d.success) {
+          addMsg("✅ " + d.message, "bot", true);
+          loadVersions();
+          if (currentGameLink) {
+            var gu = url + currentGameLink + "?t=" + Date.now();
             if (gameWindow && !gameWindow.closed) { gameWindow.location.href = gu; gameWindow.focus(); }
             else gameWindow = window.open(gu, 'gameWindow_' + session_id);
           }
-          if (!analysisRunning) setBtns(false);
-        } else if (!gameExists) {
-          pc.style.display = "none"; lk.style.display = "none"; pf.style.width = "0%";
-          lastAdjustmentComplete = false; lastConfirmationShown = false;
+        } else {
+          addMsg("✗ " + (d.message || "Revert failed"), "bot");
         }
-      }).catch(function(){});
+      }).catch(function(){
+        setBtns(false);
+        addMsg("Connection error.", "bot");
+      });
     }
 
-    function checkGameExists() {
-      fetch(url + "/check_game_exists", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({session_id: session_id})
-      }).then(function(r){return r.json();}).then(function(d){
-        if (d.exists) {
-          updateGameIndicator(true, d.game_link);
-          if (d.dashboard_path) showDashboard(d.dashboard_path);
-          if (d.download_link) document.getElementById("downloadLink").href = url + d.download_link;
-        }
-      }).catch(function(){});
-    }
-
-    document.getElementById("messageInput").addEventListener("keydown", function(e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        if (gameExists) sendLogicAdjustment(); else sendMessage();
+    // Show version toggle when game exists
+    var _origUpdateGameIndicator = updateGameIndicator;
+    updateGameIndicator = function(exists, link) {
+      _origUpdateGameIndicator(exists, link);
+      if (exists) {
+        document.getElementById("versionToggle").classList.add("show");
       }
-    });
-
-    checkGameExists();
-    setInterval(checkStatus, 1000);
-  </script>
-</body>
-</html>
+    };
+</script>
